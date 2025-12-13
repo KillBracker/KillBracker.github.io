@@ -9,13 +9,12 @@
         body {
             margin: 0;
             padding: 0;
-            height: 100vh;
+            min-height: 100vh; /* Используем min-height чтобы на мобильных не обрезалось */
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Темная тема, более геймерская */
-            background: linear-gradient(-45deg, #1b2838, #2a475e, #171a21, #66c0f4);
+            background: linear-gradient(-45deg, #1b2838, #2a475e, #0f111a, #5865F2);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             color: white;
@@ -29,16 +28,17 @@
 
         /* Стеклянная карточка */
         .glass-card {
-            background: rgba(23, 26, 33, 0.6); /* Темное стекло */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(23, 26, 33, 0.7); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
             text-align: center;
             max-width: 350px;
             width: 90%;
+            margin: 20px; /* Отступ чтобы на мобилках не прилипало к краям */
         }
 
         /* Аватарка */
@@ -46,15 +46,14 @@
             width: 130px;
             height: 130px;
             border-radius: 50%;
-            border: 3px solid #66c0f4; /* Цвет Steam */
+            border: 3px solid #66c0f4; 
             margin-bottom: 15px;
             object-fit: cover;
-            box-shadow: 0 0 15px rgba(102, 192, 244, 0.5);
+            box-shadow: 0 0 20px rgba(102, 192, 244, 0.6);
         }
 
         h1 { margin: 0; font-size: 2em; letter-spacing: 1px; }
         
-        /* Стиль для печатающегося текста */
         .typewriter {
             font-size: 1.1em;
             color: #c7d5e0;
@@ -79,23 +78,36 @@
             gap: 10px;
         }
 
-        /* Цвета кнопок под бренды */
+        /* Стили кнопок */
+        
+        /* Telegram */
         .tg-btn {
             background: rgba(42, 171, 238, 0.2);
             border: 1px solid rgba(42, 171, 238, 0.4);
         }
         .tg-btn:hover {
-            background: rgba(42, 171, 238, 0.5);
+            background: rgba(42, 171, 238, 0.6);
             box-shadow: 0 0 15px rgba(42, 171, 238, 0.4);
         }
 
+        /* Steam */
         .steam-btn {
-            background: rgba(23, 26, 33, 0.5);
+            background: rgba(23, 26, 33, 0.6);
             border: 1px solid rgba(102, 192, 244, 0.4);
         }
         .steam-btn:hover {
             background: linear-gradient(45deg, #1b2838, #2a475e);
             box-shadow: 0 0 15px rgba(102, 192, 244, 0.4);
+        }
+
+        /* Discord */
+        .ds-btn {
+            background: rgba(88, 101, 242, 0.2); /* Фирменный цвет Discord */
+            border: 1px solid rgba(88, 101, 242, 0.4);
+        }
+        .ds-btn:hover {
+            background: rgba(88, 101, 242, 0.6);
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
         }
 
         .btn:active { transform: scale(0.98); }
@@ -104,7 +116,7 @@
 <body>
 
     <div class="glass-card">
-        <img src="https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg" alt="Avatar" class="avatar">
+        <img src="avatar.gif" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
         
         <h1>KillBracker</h1>
         
@@ -118,12 +130,15 @@
             <a href="https://steamcommunity.com/id/lonelyobserver/" target="_blank" class="btn steam-btn">
                 🎮 Steam Profile
             </a>
+
+            <a href="https://discord.com/users/296367874933784579" target="_blank" class="btn ds-btn">
+                👾 Discord: killbracker
+            </a>
         </div>
     </div>
 
     <script>
-        // ТЕКСТЫ КОТОРЫЕ БУДУТ ПЕЧАТАТЬСЯ
-        const words = ["Lonely Observer", "Steam User", "KillBracker", "Welcome to my profile"];
+        const words = ["Lonely Observer", "Steam User", "Discord: killbracker", "Welcome"];
         let i = 0;
         let timer;
 

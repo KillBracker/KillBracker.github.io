@@ -29,6 +29,8 @@
         @keyframes deepGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        /* Блобы и шум (На ПК) */
         .blob { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; transition: transform 0.2s ease-out, opacity 0.5s; opacity: var(--blob-opacity); position: fixed; }
         .blob-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: #2a1b5c; }
         .blob-2 { bottom: 10%; right: 10%; width: 350px; height: 350px; background: #00d4ff; opacity: 0.4; }
@@ -41,8 +43,9 @@
         /* === КАРТОЧКИ === */
         .glass-card {
             position: relative; background: var(--card-bg);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            /* Размытие - на ПК */
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             border-radius: 24px; border: 1px solid var(--card-border);
             padding: 50px 40px 30px 40px; text-align: center;
             max-width: 600px; width: 100%;
@@ -66,7 +69,7 @@
         .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; cursor: pointer; border: 2px solid #5865F2; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .music-wrapper.active .volume-slider { width: 80px; opacity: 1; }
 
-        .avatar { position: relative; z-index: 10; width: auto; max-width: 100%; max-height: 250px; height: auto; display: block; margin: 10px auto 10px auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); transition: transform 0.05s, filter 0.3s; transform: translateZ(20px); cursor: pointer; -webkit-user-drag: none; }
+        .avatar { position: relative; z-index: 10; width: auto; max-width: 100%; max-height: 250px; height: auto; display: block; margin: 10px auto 10px auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); transition: transform 0.05s, filter 0.3s; transform: translateZ(20px); cursor: pointer; -webkit-user-drag: none; will-change: transform; }
         .avatar:active { transform: scale(0.95) translateZ(20px); }
         .avatar.hit { filter: brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3); }
         .rage-mode { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; border: 2px solid red; }
@@ -108,40 +111,57 @@
         @keyframes chestBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* === ДЕКОР И ГАЛЕРЕЯ === */
+        /* Декор */
         .corner-gif { position: fixed; bottom: 20px; right: 20px; width: 120px; height: auto; z-index: 20; pointer-events: none; transition: 0.3s; }
-        
-        .bottom-banner { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; margin-top: 20px; border: 1px solid var(--card-border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: translateZ(5px); cursor: pointer; transition: transform 0.2s; }
+        .bottom-banner { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; margin-top: 20px; border: 1px solid var(--card-border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: translateZ(5px); cursor: pointer; transition: transform 0.2s; will-change: transform; }
         .bottom-banner:hover { transform: translateZ(5px) scale(1.02); }
 
         #banner-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0,0,0,0.95); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 0.3s forwards; }
-        .banner-modal-content { max-width: 95%; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .banner-modal-content { max-width: 95%; max-height: 80vh; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .modal-download-btn { margin-top: 20px; padding: 12px 25px; background: #5865F2; color: white; text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 1.1em; display: flex; align-items: center; gap: 10px; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
+        .modal-download-btn:hover { background: #4752c4; transform: scale(1.05); }
         .banner-close-btn { position: absolute; top: 20px; right: 30px; font-size: 3em; color: white; cursor: pointer; transition: 0.3s; z-index: 10001; }
         .banner-close-btn:hover { color: #ff3333; }
 
-        /* --- STYLES FOR GALLERY --- */
+        /* Галерея */
         .gallery-title { font-size: 1.5em; margin-bottom: 20px; color: var(--text-main); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
         .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
-        .gallery-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1 / 1; border: 1px solid var(--card-border); background: rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
-        .gallery-item:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .gallery-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: 0.3s; }
-        .gallery-item:hover .gallery-img { transform: scale(1.05); filter: brightness(0.7); }
-        .download-btn { position: absolute; bottom: 10px; right: 10px; width: 35px; height: 35px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; font-size: 1.2em; opacity: 0; transform: translateY(10px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.3); }
-        .download-btn:hover { background: #5865F2; border-color: #5865F2; }
-        .gallery-item:hover .download-btn { opacity: 1; transform: translateY(0); }
+        
+        /* Оптимизированная карточка галереи */
+        .gallery-item { 
+            position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1 / 1; 
+            border: 1px solid var(--card-border); background: rgba(0,0,0,0.1); 
+            will-change: transform; transform: translateZ(0); transition: transform 0.3s; 
+        }
+        .gallery-item:hover { transform: scale(1.03); z-index: 5; }
+        .gallery-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
 
-        @media (max-width: 600px) {
-            .glass-card { padding: 30px 20px; width: 95%; }
+        /* === 📱 МОЩНАЯ ОПТИМИЗАЦИЯ ДЛЯ IOS (Anti-Lag) === */
+        @media (max-width: 768px) {
+            /* 1. Отключаем размытие (самое тяжелое) */
+            .glass-card { 
+                backdrop-filter: none !important; -webkit-backdrop-filter: none !important; 
+                background: rgba(20, 23, 35, 0.96); /* Непрозрачный темный фон */
+                border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: none;
+                padding: 30px 20px; width: 95%; 
+            }
+            body.light-theme .glass-card {
+                background: rgba(255, 255, 255, 0.96); /* Непрозрачный светлый фон */
+            }
+            
+            /* 2. Отключаем тяжелые фоновые анимации */
+            .blob, .noise-overlay { display: none !important; }
+            
+            /* 3. Упрощаем кнопки */
+            .btn { backdrop-filter: none; background: rgba(255,255,255,0.1); width: 100%; padding: 14px; font-size: 1em; }
+            
+            /* Адаптация */
             h1 { font-size: 1.8em; } 
             .corner-gif { width: 90px; bottom: 10px; right: 10px; }
-            .links { flex-direction: column; } .btn { width: 100%; padding: 14px; font-size: 1em; }
-            
-            /* UI Fixes */
+            .links { flex-direction: column; } 
             .ui-controls { right: auto; left: 15px; top: 15px; }
-            
-            /* Gallery Mobile */
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .download-btn { opacity: 1; transform: translateY(0); width: 30px; height: 30px; font-size: 1em; bottom: 5px; right: 5px; }
         }
     </style>
 </head>
@@ -175,11 +195,12 @@
     <div id="banner-modal">
         <span class="banner-close-btn" onclick="closeBannerModal()">×</span>
         <img class="banner-modal-content" id="banner-modal-img">
+        <a href="#" id="modal-download" class="modal-download-btn" download>⬇️ Скачать оригинал</a>
     </div>
 
     <div class="main-wrapper">
 
-        <div class="glass-card" id="main-card" data-tilt data-tilt-max="5" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.1">
+        <div class="glass-card" id="main-card">
             
             <div class="boss-bar-container" id="boss-container">
                 <div class="boss-hp" id="hp-bar"></div>
@@ -224,7 +245,9 @@
     </div>
 
     <script type="text/javascript">
-        VanillaTilt.init(document.querySelector("#main-card"), { max: 5, speed: 1000, glare: true, "max-glare": 0.1 });
+        if (window.innerWidth > 768) {
+            VanillaTilt.init(document.querySelector("#main-card"), { max: 5, speed: 1000, glare: true, "max-glare": 0.1 });
+        }
     </script>
 
     <script>
@@ -255,7 +278,6 @@
                 { src: "e3ca9315-53d9-43c5-810a-31610674950f.png" },
                 { src: "f273c220-0e06-447e-bc0e-cb399178c300.png" },
                 { src: "234a064f-b2c4-4c0a-af28-a49c9b23020a.png" }
-
             ],
 
             typingWords: [ "Lonely Observer 👀", "Stand User ", "Интеллектуалыч 🧠" ],
@@ -285,13 +307,14 @@
         const banEl = document.getElementById('bottom-banner-el');
         const modalImg = document.getElementById('banner-modal-img');
         const secretGifEl = document.getElementById('secret-gif-el');
+        const modalDownload = document.getElementById('modal-download');
 
         gifEl.src = CONFIG.cornerGif; banEl.src = CONFIG.bottomImage; secretGifEl.src = CONFIG.secretRewardGif;
         gifEl.onerror = () => gifEl.src = "https://media.tenor.com/On7kb94lM60AAAAj/pepe-dance.gif";
         banEl.onerror = () => { banEl.src = "https://via.placeholder.com/600x338?text=Banner+16:9"; };
         secretGifEl.onerror = () => secretGifEl.src = "https://media.tenor.com/M_Y7yowV4rQAAAAM/cat-vibe.gif";
 
-        // GALLERY GEN
+        // GALLERY GEN (БЕЗ КНОПКИ СКАЧИВАНИЯ НА ПЛИТКАХ)
         const galleryContainer = document.getElementById('gallery-container');
         if(CONFIG.gallery.length > 0) {
             CONFIG.gallery.forEach(item => {
@@ -299,13 +322,17 @@
                 div.className = 'gallery-item';
                 div.innerHTML = `
                     <img src="${item.src}" class="gallery-img" onclick="openBannerModal('${item.src}')" onerror="this.src='https://via.placeholder.com/300?text=Art'">
-                    <a href="${item.src}" download class="download-btn">⬇️</a>
                 `;
                 galleryContainer.appendChild(div);
             });
         } else { document.getElementById('gallery-card').style.display = 'none'; }
 
-        function openBannerModal(src) { modalImg.src = src || banEl.src; document.getElementById('banner-modal').style.display = 'flex'; }
+        function openBannerModal(src) { 
+            const imgSrc = src || banEl.src;
+            modalImg.src = imgSrc; 
+            modalDownload.href = imgSrc;
+            document.getElementById('banner-modal').style.display = 'flex'; 
+        }
         function closeBannerModal() { document.getElementById('banner-modal').style.display = 'none'; }
 
         const linksContainer = document.getElementById('links-container');
@@ -375,43 +402,36 @@
             constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2; this.speedX = Math.random() * 0.5 - 0.25; this.speedY = Math.random() * 0.5 - 0.25; }
             update(mouseX, mouseY) {
                 this.x += this.speedX; this.y += this.speedY;
-                if (window.innerWidth > 600) { const dx = mouseX - this.x; const dy = mouseY - this.y; const dist = Math.sqrt(dx*dx + dy*dy); if (dist < 100) { this.x -= dx * 0.05; this.y -= dy * 0.05; } }
+                if (window.innerWidth > 768) { const dx = mouseX - this.x; const dy = mouseY - this.y; const dist = Math.sqrt(dx*dx + dy*dy); if (dist < 100) { this.x -= dx * 0.05; this.y -= dy * 0.05; } }
                 if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0; if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
             }
             draw() { ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--particle-color'); ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
-        for (let i = 0; i < 40; i++) particles.push(new Particle());
+        // Меньше частиц на мобилках
+        const particleCount = window.innerWidth > 768 ? 40 : 15;
+        for (let i = 0; i < particleCount; i++) particles.push(new Particle());
         let mouseX = 0, mouseY = 0; window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
         function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(mouseX, mouseY); p.draw(); }); requestAnimationFrame(animateParticles); }
         animateParticles();
 
-        let hp = 100; const maxHp = 100; let started = false; let combo = 0; let lastClickTime = 0;
-        let currentBossLevel = 1;
-
+        let hp = 100; const maxHp = 100; let started = false; let combo = 0; let lastClickTime = 0; let currentBossLevel = 1;
         function hitBoss(e) {
             if (hp <= 0) return;
             if (!started) { started = true; document.getElementById('boss-container').style.opacity = 1; }
-            
             const now = Date.now(); if (now - lastClickTime < 1000) combo++; else combo = 1; lastClickTime = now; updateComboUI();
-            
             const rand = Math.random(); let dmg = 1; let type = 'normal'; let text = '-1';
             if (rand < 0.15) { dmg = 0; type = 'miss'; text = 'MISS'; sfxMiss(); }
             else if (rand > 0.85) { dmg = 2; type = 'crit'; text = 'CRIT -2'; sfxCrit(); document.getElementById('main-card').classList.add('rage-mode'); setTimeout(() => document.getElementById('main-card').classList.remove('rage-mode'), 200); } 
             else { sfxClick(); }
-            
             hp -= dmg; if (hp < 0) hp = 0; document.getElementById('hp-bar').style.width = (hp / maxHp * 100) + '%';
-            
             const avatar = document.getElementById('boss-avatar'); const finishText = document.getElementById('finish-text');
             avatar.classList.add('hit'); setTimeout(() => avatar.classList.remove('hit'), 100);
-            
             if (hp < maxHp * 0.4) avatar.classList.add('rage-mode');
             if (hp < maxHp * 0.1 && hp > 0) { finishText.style.opacity = 1; finishText.classList.add('blink'); if (isPlaying) bgMusic.playbackRate = 0.8; } 
             else { finishText.style.opacity = 0; }
-            
             showFloatText(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2, text, type);
             if (hp <= 0) winGame();
         }
-
         function updateComboUI() { const el = document.getElementById('combo-counter'); if (combo > 1) { el.innerText = 'x' + combo; el.style.opacity = 1; el.style.transform = `rotate(${Math.random()*20-10}deg) scale(${1 + combo/50})`; } else { el.style.opacity = 0; } }
         function showFloatText(x, y, text, type) { const el = document.createElement('div'); el.className = `float-dmg ${type}`; el.innerText = text; el.style.left = x + 'px'; el.style.top = y + 'px'; document.body.appendChild(el); setTimeout(() => el.remove(), 600); }
         
@@ -424,50 +444,20 @@
             const title = document.getElementById('reward-title-el');
             const btn = document.getElementById('reward-btn-el');
             const secretGif = document.getElementById('secret-gif-el');
-            
-            title.style.display = 'block';
-            btn.style.display = 'inline-block';
-            secretGif.style.display = 'none';
+            title.style.display = 'block'; btn.style.display = 'inline-block'; secretGif.style.display = 'none';
 
             if (currentBossLevel === 1) {
-                // LEVEL 1
-                title.innerText = "ТВОЯ НАГРАДА";
-                btn.className = "giant-chest-btn gold-chest";
-                btn.href = CONFIG.rewardLink;
-                btn.innerText = "🎁 ОТКРЫТЬ";
-                btn.onclick = null;
+                title.innerText = "ТВОЯ НАГРАДА"; btn.className = "giant-chest-btn gold-chest"; btn.href = CONFIG.rewardLink; btn.innerText = "🎁 ОТКРЫТЬ"; btn.onclick = null;
             } else {
-                // LEVEL 2
-                title.innerText = "СУПЕР НАГРАДА";
-                btn.className = "giant-chest-btn diamond-chest";
-                btn.removeAttribute('href');
-                btn.innerText = "💎 ОТКРЫТЬ";
-                
+                title.innerText = "СУПЕР НАГРАДА"; btn.className = "giant-chest-btn diamond-chest"; btn.removeAttribute('href'); btn.innerText = "💎 ОТКРЫТЬ";
                 btn.onclick = function() {
-                    this.innerText = "тут ничего нет...";
-                    this.style.background = "#333";
-                    this.style.color = "#aaa";
-                    this.style.cursor = "default";
-                    this.style.animation = "none";
-                    this.style.boxShadow = "none";
-                    this.style.border = "2px solid #555";
-                    
+                    this.innerText = "тут ничего нет..."; this.style.background = "#333"; this.style.color = "#aaa"; this.style.cursor = "default"; this.style.animation = "none"; this.style.boxShadow = "none"; this.style.border = "2px solid #555";
                     setTimeout(() => {
-                        this.innerText = "Продолжить ➡️";
-                        this.style.background = "#fff";
-                        this.style.color = "#333";
-                        this.style.cursor = "pointer";
-                        this.style.border = "2px solid white";
-                        
-                        this.onclick = function() {
-                            this.style.display = 'none';
-                            title.style.display = 'none';
-                            secretGif.style.display = 'block';
-                        };
+                        this.innerText = "Продолжить ➡️"; this.style.background = "#fff"; this.style.color = "#333"; this.style.cursor = "pointer"; this.style.border = "2px solid white";
+                        this.onclick = function() { this.style.display = 'none'; title.style.display = 'none'; secretGif.style.display = 'block'; };
                     }, 1500);
                 };
             }
-
             setTimeout(() => { document.getElementById('reward-overlay').style.display = 'flex'; }, 800); 
         }
 
@@ -477,18 +467,9 @@
             document.getElementById('boss-container').style.opacity = 0; 
             
             if (currentBossLevel === 1) {
-                currentBossLevel = 2;
-                hp = 500; maxHp = 500;
-                document.getElementById('boss-avatar').src = CONFIG.avatarGif2; 
-                document.getElementById('boss-avatar').style.display = 'block'; 
-                started = false;
+                currentBossLevel = 2; hp = 500; maxHp = 500; document.getElementById('boss-avatar').src = CONFIG.avatarGif2; document.getElementById('boss-avatar').style.display = 'block'; started = false;
             } else if (currentBossLevel === 2) {
-                currentBossLevel = 3;
-                document.getElementById('boss-avatar').src = CONFIG.finalSiteGif; 
-                document.getElementById('boss-avatar').style.display = 'block'; 
-                hp = 0;
-                document.getElementById('boss-avatar').onclick = null;
-                document.getElementById('boss-avatar').style.cursor = "default";
+                currentBossLevel = 3; document.getElementById('boss-avatar').src = CONFIG.finalSiteGif; document.getElementById('boss-avatar').style.display = 'block'; hp = 0; document.getElementById('boss-avatar').onclick = null; document.getElementById('boss-avatar').style.cursor = "default";
             }
             document.getElementById('hp-bar').style.width = '100%';
         }

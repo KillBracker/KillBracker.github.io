@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KillBracker | Ultimate Profile</title>
+    <title>KillBracker | Profile</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* === 0. ПЕРЕМЕННЫЕ ТЕМ (CSS VARIABLES) === */
+        /* === 0. ПЕРЕМЕННЫЕ ТЕМ === */
         :root {
             /* DARK THEME (DEFAULT) */
             --bg-gradient: linear-gradient(125deg, #0b0f19 0%, #180c2e 30%, #2a1b5c 60%, #00d4ff 100%);
             --text-main: #ffffff;
             --text-sub: #8b9bb4;
-            --card-bg: rgba(20, 23, 35, 0.65);
+            --card-bg: rgba(20, 23, 35, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
             --btn-bg: rgba(255, 255, 255, 0.05);
             --btn-hover: rgba(255, 255, 255, 0.15);
             --particle-color: rgba(255, 255, 255, 0.5);
             --blob-opacity: 0.6;
-            --accent-glow: rgba(102, 192, 244, 0.5);
         }
 
         /* LIGHT THEME */
@@ -27,17 +26,16 @@
             --bg-gradient: linear-gradient(125deg, #f5f7fa 0%, #c3cfe2 100%);
             --text-main: #2c3e50;
             --text-sub: #546e7a;
-            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.7);
             --card-border: rgba(0, 0, 0, 0.05);
             --btn-bg: rgba(0, 0, 0, 0.05);
             --btn-hover: rgba(0, 0, 0, 0.1);
             --particle-color: rgba(0, 0, 0, 0.3);
             --blob-opacity: 0.3;
-            --accent-glow: rgba(0, 0, 0, 0.2);
         }
 
         /* === ГЛОБАЛЬНЫЕ НАСТРОЙКИ === */
-        * { cursor: none; box-sizing: border-box; }
+        * { box-sizing: border-box; } /* Курсор стандартный */
 
         body {
             margin: 0; padding: 0; min-height: 100vh;
@@ -78,38 +76,19 @@
             pointer-events: none; z-index: 2; opacity: 0.06;
             background-image: url("https://grainy-gradients.vercel.app/noise.svg");
         }
-
-        /* === КАСТОМНЫЙ КУРСОР === */
-        .cursor-dot {
-            width: 8px; height: 8px; background-color: var(--text-main);
-            position: fixed; border-radius: 50%; z-index: 9999; pointer-events: none;
-            transform: translate(-50%, -50%);
-        }
-        .cursor-outline {
-            width: 40px; height: 40px; border: 1px solid var(--text-main);
-            position: fixed; border-radius: 50%; z-index: 9999; pointer-events: none;
-            transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background-color 0.2s;
-            opacity: 0.5;
-        }
-        body.hovering .cursor-outline { width: 60px; height: 60px; background-color: rgba(125,125,125, 0.1); border-color: transparent; }
         
-        /* === UI КОНТРОЛЛЫ (ВЕРХНИЙ ПРАВЫЙ УГОЛ) === */
+        /* === UI КОНТРОЛЛЫ (ТЕМА) === */
         .ui-controls {
             position: absolute; top: 20px; right: 20px; z-index: 101;
-            display: flex; gap: 15px; align-items: center;
         }
-
         .icon-btn {
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
             color: var(--text-main); font-size: 1.2em;
             width: 40px; height: 40px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s; cursor: none; /* Кастомный курсор */
+            transition: 0.3s; cursor: pointer;
         }
         .icon-btn:hover { transform: scale(1.1); background: var(--btn-hover); }
-        
-        /* Тумблер темы */
-        .theme-toggle svg { width: 20px; height: 20px; fill: var(--text-main); }
 
         /* === КАРТОЧКА === */
         .glass-card {
@@ -127,10 +106,6 @@
         }
         @keyframes breath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.005); } }
 
-        /* Rage Mode Shake */
-        .rage-mode { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite !important; border-color: red !important; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-
         /* Boss Bar */
         .boss-bar-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 6px;
@@ -142,20 +117,59 @@
             transition: width 0.1s linear;
         }
 
+        /* МУЗЫКАЛЬНЫЙ БЛОК (ВНУТРИ КАРТОЧКИ) */
+        .music-wrapper {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; align-items: center; gap: 10px;
+            transform: translateZ(50px); z-index: 101;
+        }
+        .music-btn {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 1.2em; cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center;
+            animation: pulseBtn 2s infinite; 
+        }
+        .music-active { background: #5865F2; border-color: #5865F2; animation: none; box-shadow: 0 0 15px rgba(88, 101, 242, 0.6); }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+
+        /* Ползунок громкости */
+        .volume-slider {
+            width: 0; opacity: 0; height: 6px; background: rgba(255,255,255,0.3);
+            border-radius: 3px; -webkit-appearance: none; outline: none;
+            transition: 0.4s ease; margin-right: 5px; cursor: pointer;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+            background: #fff; cursor: pointer; border: 2px solid #5865F2;
+        }
+        .music-wrapper.active .volume-slider { width: 70px; opacity: 1; }
+
+
         /* Аватарка */
         .avatar {
             position: relative; z-index: 10;
             width: auto; max-width: 100%; max-height: 250px; height: auto;
-            display: block; margin: 10px auto 20px auto;
+            display: block; margin: 10px auto 10px auto;
             border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);
             transition: transform 0.05s, filter 0.3s; transform: translateZ(20px);
+            cursor: pointer;
         }
         .avatar:active { transform: scale(0.95) translateZ(20px); }
         .avatar.hit { filter: brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3); }
+        .rage-mode { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; border: 2px solid red; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
 
         /* Тексты */
         h1 { margin: 0; font-size: 2.2em; font-weight: 800; letter-spacing: -1px; transform: translateZ(15px); color: var(--text-main); }
-        .subtitle { font-size: 1em; color: var(--text-sub); margin: 5px 0 20px 0; transform: translateZ(12px); }
+        .subtitle { font-size: 1em; color: var(--text-sub); margin: 5px 0 10px 0; transform: translateZ(12px); }
+
+        /* Печатная машинка (ВЕРНУЛ) */
+        .typewriter {
+            font-size: 1.1em; color: #66c0f4; margin: 0 0 25px 0;
+            min-height: 1.5em; font-weight: 600; transform: translateZ(12px);
+        }
 
         /* Статус бокс */
         .status-box {
@@ -165,7 +179,6 @@
             transform: translateZ(10px); display: flex; flex-direction: column; gap: 8px;
         }
         .song-name { color: #66c0f4; font-weight: 600; }
-        body.light-theme .song-name { color: #2980b9; }
 
         /* Ссылки */
         .links { display: flex; flex-direction: column; gap: 12px; transform: translateZ(30px); }
@@ -174,9 +187,14 @@
             border-radius: 14px; transition: 0.3s; font-weight: 600;
             display: flex; align-items: center; justify-content: center; gap: 10px;
             background: var(--btn-bg); border: 1px solid var(--card-border);
-            backdrop-filter: blur(5px); cursor: none;
+            backdrop-filter: blur(5px); cursor: pointer;
         }
         .btn:hover { background: var(--btn-hover); transform: translateY(-2px); }
+
+        /* Спец кнопки */
+        .tg-btn:hover { border-color: #2AABEE; box-shadow: 0 0 20px rgba(42, 171, 238, 0.2); }
+        .steam-btn:hover { border-color: #171a21; box-shadow: 0 0 20px rgba(102, 192, 244, 0.2); }
+        .ds-btn:hover { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.2); }
 
         /* Комбо счетчик */
         #combo-counter {
@@ -190,8 +208,7 @@
         #finish-text {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(60px);
             font-size: 3em; font-weight: 900; color: #ff0000; text-transform: uppercase;
-            text-shadow: 0 0 20px black; opacity: 0; pointer-events: none; z-index: 103;
-            width: 100%;
+            text-shadow: 0 0 20px black; opacity: 0; pointer-events: none; z-index: 103; width: 100%;
         }
         .blink { animation: blinker 0.2s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
@@ -208,15 +225,13 @@
         @keyframes floatUp { 100% { opacity: 0; transform: translateY(-80px) scale(1.2); } }
 
         /* Экран победы */
-        #reward-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 1s forwards; cursor: auto; }
-        .giant-chest-btn { font-size: 2em; padding: 20px 40px; background: white; color: #d35400; border: none; border-radius: 20px; text-decoration: none; animation: chestBounce 1s infinite alternate; cursor: pointer; }
+        #reward-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 1s forwards; }
+        .giant-chest-btn { font-size: 2em; padding: 20px 40px; background: white; color: #d35400; border: none; border-radius: 20px; text-decoration: none; animation: chestBounce 1s infinite alternate; cursor: pointer; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .back-btn { font-size: 1.2em; padding: 10px 30px; background: rgba(0,0,0,0.2); color: white; border: 2px solid white; border-radius: 15px; cursor: pointer; transition: 0.3s; }
+        .back-btn:hover { background: white; color: #d35400; }
         @keyframes chestBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* Плеер (скрытый слайдер) */
-        .volume-slider { width: 0; opacity: 0; height: 5px; background: rgba(255,255,255,0.3); -webkit-appearance: none; transition: 0.3s; margin-right: 10px; cursor: none;}
-        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: white; border-radius: 50%; }
-        .music-wrapper.active .volume-slider { width: 60px; opacity: 1; }
     </style>
 </head>
 <body class="dark-theme">
@@ -227,31 +242,27 @@
     <div class="noise-overlay"></div>
     <canvas id="particles-canvas"></canvas>
 
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-
     <div class="ui-controls">
-        <button class="icon-btn theme-toggle" onclick="toggleTheme()" id="theme-btn">
-            🌙
-        </button>
-        
-        <div id="music-wrapper" style="display: flex; align-items: center;">
-            <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.5">
-            <button class="icon-btn" onclick="toggleMute()" id="mute-btn">🔊</button>
-        </div>
+        <button class="icon-btn theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
     </div>
     
     <audio id="bg-music" loop src="song.mp3"></audio>
 
     <div id="reward-overlay">
-        <h1 style="font-size: 3em; color: white; margin-bottom: 50px;">ТВОЯ НАГРАДА</h1>
+        <h1 style="font-size: 3em; color: white; margin-bottom: 50px; text-shadow: 0 5px 10px rgba(0,0,0,0.2);">ТВОЯ НАГРАДА</h1>
         <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="giant-chest-btn">🎁 ОТКРЫТЬ</a>
+        <button class="back-btn" onclick="closeReward()">Вернуться на сайт</button>
     </div>
 
     <div class="glass-card" id="main-card" data-tilt data-tilt-max="5" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.1">
         
         <div class="boss-bar-container" id="boss-container">
             <div class="boss-hp" id="hp-bar"></div>
+        </div>
+
+        <div class="music-wrapper" id="music-wrapper">
+            <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.5">
+            <button class="music-btn" onclick="toggleMusic()" id="music-btn-el">🎵</button>
         </div>
 
         <div id="combo-counter">x1</div>
@@ -261,6 +272,8 @@
         
         <h1>KillBracker</h1>
         <p class="subtitle">Люблю музыку и экспериментирую</p>
+        
+        <div class="typewriter" id="typing-text"></div>
 
         <div class="status-box">
             <div class="status-row">
@@ -283,12 +296,10 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
 
     <script>
-        /* === 1. АУДИО СИНТЕЗАТОР (БЕЗ ФАЙЛОВ) === */
+        /* === 1. АУДИО СИНТЕЗАТОР (Звуки кликов) === */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let isMuted = false;
-
+        
         function playTone(freq, type, duration) {
-            if (isMuted) return;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = type;
@@ -301,43 +312,78 @@
             osc.stop(audioCtx.currentTime + duration);
         }
 
-        function sfxClick() { playTone(600, 'triangle', 0.1); } // Обычный удар
-        function sfxCrit() { playTone(150, 'sawtooth', 0.2); playTone(800, 'square', 0.1); } // Крит
-        function sfxMiss() { playTone(200, 'sine', 0.1); } // Промах
-        function sfxHover() { playTone(1200, 'sine', 0.05); } // Ховер
+        function sfxClick() { playTone(600, 'triangle', 0.1); }
+        function sfxCrit() { playTone(150, 'sawtooth', 0.2); playTone(800, 'square', 0.1); }
+        function sfxMiss() { playTone(200, 'sine', 0.1); }
+        function sfxHover() { playTone(1200, 'sine', 0.05); }
 
-        /* === 2. МУЗЫКА И MUTE === */
+        /* === 2. МУЗЫКА И КНОПКИ === */
         const bgMusic = document.getElementById('bg-music');
-        const muteBtn = document.getElementById('mute-btn');
+        const musicBtnEl = document.getElementById('music-btn-el');
         const slider = document.getElementById('vol-slider');
         const musicWrapper = document.getElementById('music-wrapper');
+        let isPlaying = false;
         
         bgMusic.volume = 0.5;
 
-        function toggleMute() {
-            isMuted = !isMuted;
-            if (isMuted) {
+        function toggleMusic() {
+            if (isPlaying) {
                 bgMusic.pause();
-                muteBtn.innerText = '🔇';
+                musicBtnEl.innerText = '🎵';
+                musicBtnEl.classList.remove('music-active');
                 musicWrapper.classList.remove('active');
             } else {
                 bgMusic.play().catch(e => console.log('Audio blocked'));
-                muteBtn.innerText = '🔊';
+                musicBtnEl.innerText = '⏸️';
+                musicBtnEl.classList.add('music-active');
                 musicWrapper.classList.add('active');
             }
+            isPlaying = !isPlaying;
         }
 
         slider.addEventListener('input', (e) => bgMusic.volume = e.target.value);
 
-        /* === 3. DAY/NIGHT THEME === */
+        /* === 3. ПЕЧАТНАЯ МАШИНКА (ВЕРНУЛАСЬ) === */
+        const words = ["Lonely Observer 👀", "Stand User ", "Интеллектуалыч 🧠"];
+        let i = 0;
+        let timer;
+
+        function typingEffect() {
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (word.length > 0) {
+                    document.getElementById('typing-text').innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, 2000); 
+                    return false;
+                };
+                timer = setTimeout(loopTyping, 100); 
+            };
+            loopTyping();
+        }
+
+        function deletingEffect() {
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (word.length > 0) {
+                    word.pop();
+                    document.getElementById('typing-text').innerHTML = word.join("");
+                } else {
+                    if (words.length > (i + 1)) { i++; } else { i = 0; }
+                    typingEffect();
+                    return false;
+                };
+                timer = setTimeout(loopDeleting, 50); 
+            };
+            loopDeleting();
+        }
+        typingEffect();
+
+        /* === 4. DAY/NIGHT THEME === */
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
             const isLight = document.body.classList.contains('light-theme');
-            
-            // Сохраняем
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            
-            // UI Update
             updateThemeUI(isLight);
             sfxClick();
         }
@@ -358,22 +404,18 @@
             }
         }
 
-        // Загрузка темы
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-theme');
             updateThemeUI(true);
         }
 
-        /* === 4. CANVAS PARTICLES === */
+        /* === 5. CANVAS PARTICLES === */
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
@@ -386,37 +428,21 @@
                 this.speedY = Math.random() * 0.5 - 0.25;
             }
             update(mouseX, mouseY) {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                // Интерактив с мышью
-                const dx = mouseX - this.x;
-                const dy = mouseY - this.y;
+                this.x += this.speedX; this.y += this.speedY;
+                const dx = mouseX - this.x; const dy = mouseY - this.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 100) {
-                    this.x -= dx * 0.05;
-                    this.y -= dy * 0.05;
-                }
-
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
+                if (dist < 100) { this.x -= dx * 0.05; this.y -= dy * 0.05; }
+                if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
             }
             draw() {
-                // Цвет частиц зависит от темы
                 ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--particle-color');
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
-
         for (let i = 0; i < 50; i++) particles.push(new Particle());
-
         let mouseX = 0, mouseY = 0;
         window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => { p.update(mouseX, mouseY); p.draw(); });
@@ -424,7 +450,7 @@
         }
         animateParticles();
 
-        /* === 5. БОСС МЕХАНИКИ === */
+        /* === 6. БОСС МЕХАНИКИ === */
         let hp = 100;
         const maxHp = 100;
         let started = false;
@@ -439,72 +465,52 @@
                 document.getElementById('boss-container').style.opacity = 1;
             }
 
-            // COMBO LOGIC
             const now = Date.now();
             if (now - lastClickTime < 1000) combo++; else combo = 1;
             lastClickTime = now;
             updateComboUI();
 
-            // CRIT / MISS LOGIC
             const rand = Math.random();
-            let dmg = 1;
-            let type = 'normal';
-            let text = '-1';
+            let dmg = 1; let type = 'normal'; let text = '-1';
 
-            if (rand < 0.15) { // Miss 15%
-                dmg = 0; type = 'miss'; text = 'MISS'; sfxMiss();
-            } else if (rand > 0.85) { // Crit 15%
+            if (rand < 0.15) { dmg = 0; type = 'miss'; text = 'MISS'; sfxMiss(); }
+            else if (rand > 0.85) {
                 dmg = 2; type = 'crit'; text = 'CRIT -2'; sfxCrit();
-                document.getElementById('main-card').classList.add('rage-mode'); // Shake effect
+                document.getElementById('main-card').classList.add('rage-mode');
                 setTimeout(() => document.getElementById('main-card').classList.remove('rage-mode'), 200);
-            } else {
-                sfxClick();
-            }
+            } else { sfxClick(); }
 
-            // HP UPDATE
-            hp -= dmg;
-            if (hp < 0) hp = 0;
-            const pct = (hp / maxHp) * 100;
-            document.getElementById('hp-bar').style.width = pct + '%';
+            hp -= dmg; if (hp < 0) hp = 0;
+            document.getElementById('hp-bar').style.width = (hp / maxHp * 100) + '%';
 
-            // PHASES
             const avatar = document.getElementById('boss-avatar');
             const finishText = document.getElementById('finish-text');
             
             avatar.classList.add('hit');
             setTimeout(() => avatar.classList.remove('hit'), 100);
 
-            if (hp < 40) avatar.classList.add('rage-mode'); // Rage Phase
-            if (hp < 10 && hp > 0) { // Final Phase
-                finishText.style.opacity = 1;
-                finishText.classList.add('blink');
-                if (!isMuted) bgMusic.playbackRate = 0.8; // Slow mo effect
-            } else {
-                finishText.style.opacity = 0;
-            }
+            if (hp < 40) avatar.classList.add('rage-mode');
+            if (hp < 10 && hp > 0) {
+                finishText.style.opacity = 1; finishText.classList.add('blink');
+                if (isPlaying) bgMusic.playbackRate = 0.8;
+            } else { finishText.style.opacity = 0; }
 
             showFloatText(e.clientX, e.clientY, text, type);
-
             if (hp <= 0) winGame();
         }
 
         function updateComboUI() {
             const el = document.getElementById('combo-counter');
             if (combo > 1) {
-                el.innerText = 'x' + combo;
-                el.style.opacity = 1;
+                el.innerText = 'x' + combo; el.style.opacity = 1;
                 el.style.transform = `rotate(${Math.random()*20-10}deg) scale(${1 + combo/50})`;
-            } else {
-                el.style.opacity = 0;
-            }
+            } else { el.style.opacity = 0; }
         }
 
         function showFloatText(x, y, text, type) {
             const el = document.createElement('div');
-            el.className = `float-dmg ${type}`;
-            el.innerText = text;
-            el.style.left = x + 'px';
-            el.style.top = y + 'px';
+            el.className = `float-dmg ${type}`; el.innerText = text;
+            el.style.left = x + 'px'; el.style.top = y + 'px';
             document.body.appendChild(el);
             setTimeout(() => el.remove(), 600);
         }
@@ -512,30 +518,24 @@
         function winGame() {
             document.getElementById('finish-text').style.display = 'none';
             document.getElementById('boss-avatar').style.display = 'none';
-            
-            playTone(400, 'sine', 0.1); setTimeout(() => playTone(600, 'sine', 0.2), 150); // Win sound
+            playTone(400, 'sine', 0.1); setTimeout(() => playTone(600, 'sine', 0.2), 150);
             
             launchConfetti();
-            
-            setTimeout(() => {
-                document.getElementById('reward-overlay').style.display = 'flex';
-                document.body.style.cursor = 'auto'; // Return cursor
-            }, 800);
+            setTimeout(() => { document.getElementById('reward-overlay').style.display = 'flex'; }, 800);
         }
 
-        /* === 6. КУРСОР И ХОВЕРЫ === */
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
+        function closeReward() {
+            document.getElementById('reward-overlay').style.display = 'none';
+            // Сброс игры (по желанию)
+            hp = 100;
+            document.getElementById('boss-avatar').style.display = 'block';
+            document.getElementById('hp-bar').style.width = '100%';
+            document.getElementById('boss-container').style.opacity = 0;
+            started = false;
+        }
 
+        /* === 7. КУРСОР И ХОВЕРЫ === */
         window.addEventListener('mousemove', (e) => {
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-            
-            cursorOutline.animate({
-                left: e.clientX + 'px', top: e.clientY + 'px'
-            }, { duration: 500, fill: "forwards" });
-
-            // Blobs parallax
             const x = (window.innerWidth - e.clientX * 2) / 100;
             const y = (window.innerHeight - e.clientY * 2) / 100;
             document.querySelector('.blob-1').style.transform = `translate(${x}px, ${y}px)`;
@@ -543,11 +543,7 @@
         });
 
         document.querySelectorAll('a, button, input, .avatar').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                document.body.classList.add('hovering');
-                sfxHover();
-            });
-            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            el.addEventListener('mouseenter', sfxHover);
         });
 
         function launchConfetti() {
@@ -559,30 +555,17 @@
             }());
         }
 
-        /* === 7. СПИСОК ПЕСЕН === */
+        /* === 8. СПИСОК ПЕСЕН === */
         const songs = [
-            "Die With A Smile — Lady Gaga & Bruno Mars",
-            "Running Up That Hill — Kate Bush",
-            "End of Beginning — Djo",
-            "we fell in love in october — girl in red",
-            "16 Lines — Lil Peep",
-            "Hope — XXXTENTACION",
-            "カーストルーム — ZAQ",
-            "Dance In The Game — ZAQ",
-            "Atlantis — Seafret",
-            "Moog City 2 — C418",
-            "SAVIOR — Hollywood Undead",
-            "Skyfall — Adele",
-            "Daylight — David Kushner",
-            "怪獣 — sakanaction"
+            "Die With A Smile — Lady Gaga & Bruno Mars", "Running Up That Hill — Kate Bush", "End of Beginning — Djo",
+            "we fell in love in october — girl in red", "16 Lines — Lil Peep", "Hope — XXXTENTACION",
+            "カーストルーム — ZAQ", "Dance In The Game — ZAQ", "Atlantis — Seafret",
+            "Moog City 2 — C418", "SAVIOR — Hollywood Undead", "Skyfall — Adele", "Daylight — David Kushner", "怪獣 — sakanaction"
         ];
         function changeSong() {
             const el = document.getElementById('current-song');
             el.style.opacity = 0;
-            setTimeout(() => {
-                el.innerText = songs[Math.floor(Math.random() * songs.length)];
-                el.style.opacity = 1;
-            }, 300);
+            setTimeout(() => { el.innerText = songs[Math.floor(Math.random() * songs.length)]; el.style.opacity = 1; }, 300);
         }
         setInterval(changeSong, 120000);
         changeSong();

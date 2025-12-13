@@ -25,33 +25,36 @@
 
         /* === ОСНОВА === */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gradient); background-size: 300% 300%; animation: deepGradient 15s ease infinite; color: var(--text-main); overflow-x: hidden; overflow-y: auto; user-select: none; transition: background 0.5s ease, color 0.5s ease; position: relative; }
+        body { margin: 0; padding: 0; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gradient); background-size: 300% 300%; background-attachment: fixed; animation: deepGradient 15s ease infinite; color: var(--text-main); overflow-x: hidden; overflow-y: auto; user-select: none; transition: background 0.5s ease, color 0.5s ease; position: relative; }
         @keyframes deepGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; transition: transform 0.2s ease-out, opacity 0.5s; opacity: var(--blob-opacity); }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; transition: transform 0.2s ease-out, opacity 0.5s; opacity: var(--blob-opacity); position: fixed; }
         .blob-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: #2a1b5c; }
         .blob-2 { bottom: 10%; right: 10%; width: 350px; height: 350px; background: #00d4ff; opacity: 0.4; }
         .blob-3 { top: 40%; left: 40%; width: 300px; height: 300px; background: #ff0055; opacity: 0.2; }
         .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; opacity: 0.06; background-image: url("https://grainy-gradients.vercel.app/noise.svg"); }
 
-        /* === ДЕКОР === */
-        .corner-gif { position: fixed; bottom: 20px; right: 20px; width: 120px; height: auto; z-index: 20; pointer-events: none; transition: 0.3s; }
-        .bottom-banner { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; margin-top: 20px; border: 1px solid var(--card-border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: translateZ(5px); cursor: pointer; transition: transform 0.2s; }
-        .bottom-banner:hover { transform: translateZ(5px) scale(1.02); }
+        /* === ГЛАВНЫЙ КОНТЕЙНЕР === */
+        .main-wrapper { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; width: 100%; position: relative; z-index: 10; }
 
-        #banner-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 0.3s forwards; }
-        .banner-modal-content { max-width: 90%; max-height: 80vh; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
-        .banner-close-btn { position: absolute; top: 20px; right: 30px; font-size: 2.5em; color: white; cursor: pointer; transition: 0.3s; }
-        .banner-close-btn:hover { color: #ff3333; }
+        /* === КАРТОЧКИ === */
+        .glass-card {
+            position: relative; background: var(--card-bg);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; border: 1px solid var(--card-border);
+            padding: 50px 40px 30px 40px; text-align: center;
+            max-width: 600px; width: 100%;
+            margin-bottom: 30px; 
+            transform-style: preserve-3d; transition: border 0.5s;
+        }
 
-        /* === КАРТОЧКА === */
-        .glass-card { position: relative; background: var(--card-bg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid var(--card-border); padding: 50px 40px 30px 40px; text-align: center; max-width: 600px; width: 90%; transform-style: preserve-3d; z-index: 10; margin: 20px 0; transition: border 0.5s; }
-        
+        /* === ПРОФИЛЬ === */
         .boss-bar-container { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 24px 24px 0 0; overflow: hidden; opacity: 0; transition: opacity 0.5s; z-index: 100; }
         .boss-hp { width: 100%; height: 100%; background: linear-gradient(90deg, #ff3333, #ff0055); transition: width 0.1s linear; }
 
-        .ui-controls { position: absolute; top: 20px; right: 20px; z-index: 101; }
+        .ui-controls { position: fixed; top: 20px; right: 20px; z-index: 101; }
         .icon-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--text-main); font-size: 1.2em; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; cursor: pointer; }
         .icon-btn:hover { transform: scale(1.1); background: var(--btn-hover); }
 
@@ -92,8 +95,7 @@
         .normal { color: #ffaa00; }
         @keyframes floatUp { 100% { opacity: 0; transform: translateY(-80px) scale(1.2); } }
 
-        /* ЭКРАН ПОБЕДЫ */
-        #reward-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 1s forwards; padding: 20px; text-align: center; }
+        #reward-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 1s forwards; padding: 20px; text-align: center; }
         
         .gold-chest { background: white; color: #d35400; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .diamond-chest { background: linear-gradient(135deg, #e0f7fa 0%, #00e5ff 100%); color: #006064; border: 2px solid white; box-shadow: 0 0 40px #00e5ff; text-shadow: 0 0 5px white; }
@@ -102,17 +104,44 @@
         .back-btn { font-size: 1.2em; padding: 10px 30px; background: rgba(0,0,0,0.2); color: white; border: 2px solid white; border-radius: 15px; cursor: pointer; transition: 0.3s; }
         .back-btn:hover { background: white; color: #333; }
         
-        /* Скрытая картинка в награде */
-        #secret-gif-el { max-width: 300px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
-
+        #final-gif-el, #secret-gif-el { max-width: 300px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
         @keyframes chestBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* === ДЕКОР И ГАЛЕРЕЯ === */
+        .corner-gif { position: fixed; bottom: 20px; right: 20px; width: 120px; height: auto; z-index: 20; pointer-events: none; transition: 0.3s; }
+        
+        .bottom-banner { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; margin-top: 20px; border: 1px solid var(--card-border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: translateZ(5px); cursor: pointer; transition: transform 0.2s; }
+        .bottom-banner:hover { transform: translateZ(5px) scale(1.02); }
+
+        #banner-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0,0,0,0.95); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 0.3s forwards; }
+        .banner-modal-content { max-width: 95%; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .banner-close-btn { position: absolute; top: 20px; right: 30px; font-size: 3em; color: white; cursor: pointer; transition: 0.3s; z-index: 10001; }
+        .banner-close-btn:hover { color: #ff3333; }
+
+        /* --- STYLES FOR GALLERY --- */
+        .gallery-title { font-size: 1.5em; margin-bottom: 20px; color: var(--text-main); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
+        .gallery-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1 / 1; border: 1px solid var(--card-border); background: rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
+        .gallery-item:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .gallery-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: 0.3s; }
+        .gallery-item:hover .gallery-img { transform: scale(1.05); filter: brightness(0.7); }
+        .download-btn { position: absolute; bottom: 10px; right: 10px; width: 35px; height: 35px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; font-size: 1.2em; opacity: 0; transform: translateY(10px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.3); }
+        .download-btn:hover { background: #5865F2; border-color: #5865F2; }
+        .gallery-item:hover .download-btn { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 600px) {
             .glass-card { padding: 30px 20px; width: 95%; }
             h1 { font-size: 1.8em; } 
             .corner-gif { width: 90px; bottom: 10px; right: 10px; }
             .links { flex-direction: column; } .btn { width: 100%; padding: 14px; font-size: 1em; }
+            
+            /* UI Fixes */
+            .ui-controls { right: auto; left: 15px; top: 15px; }
+            
+            /* Gallery Mobile */
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .download-btn { opacity: 1; transform: translateY(0); width: 30px; height: 30px; font-size: 1em; bottom: 5px; right: 5px; }
         }
     </style>
 </head>
@@ -148,41 +177,50 @@
         <img class="banner-modal-content" id="banner-modal-img">
     </div>
 
-    <div class="glass-card" id="main-card" data-tilt data-tilt-max="5" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.1">
-        
-        <div class="boss-bar-container" id="boss-container">
-            <div class="boss-hp" id="hp-bar"></div>
-        </div>
+    <div class="main-wrapper">
 
-        <div class="music-wrapper" id="music-wrapper">
-            <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.5">
-            <button class="music-btn" onclick="toggleMusic()" id="music-btn-el">🎵</button>
-        </div>
-
-        <div id="combo-counter">x1</div>
-        <div id="finish-text">FINISH HIM!</div>
-
-        <img src="avatar.gif" alt="Avatar" class="avatar" id="boss-avatar" onclick="hitBoss(event)" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
-        
-        <h1 id="name-el"></h1>
-        <p class="subtitle" id="subtitle-el"></p>
-        
-        <div class="typewriter" id="typing-text"></div>
-
-        <div class="status-box">
-            <div class="status-row">
-                <span>🎵</span>
-                <span>Сейчас слушаю: <span class="song-name" id="current-song">Загрузка...</span></span>
+        <div class="glass-card" id="main-card" data-tilt data-tilt-max="5" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.1">
+            
+            <div class="boss-bar-container" id="boss-container">
+                <div class="boss-hp" id="hp-bar"></div>
             </div>
-            <div class="status-row">
-                <span id="theme-icon">🌙</span>
-                <span id="theme-text">Режим: Ночной</span>
+
+            <div class="music-wrapper" id="music-wrapper">
+                <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.5">
+                <button class="music-btn" onclick="toggleMusic()" id="music-btn-el">🎵</button>
             </div>
+
+            <div id="combo-counter">x1</div>
+            <div id="finish-text">FINISH HIM!</div>
+
+            <img src="avatar.gif" alt="Avatar" class="avatar" id="boss-avatar" onclick="hitBoss(event)" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
+            
+            <h1 id="name-el"></h1>
+            <p class="subtitle" id="subtitle-el"></p>
+            
+            <div class="typewriter" id="typing-text"></div>
+
+            <div class="status-box">
+                <div class="status-row">
+                    <span>🎵</span>
+                    <span>Сейчас слушаю: <span class="song-name" id="current-song">Загрузка...</span></span>
+                </div>
+                <div class="status-row">
+                    <span id="theme-icon">🌙</span>
+                    <span id="theme-text">Режим: Ночной</span>
+                </div>
+            </div>
+
+            <div class="links" id="links-container"></div>
+
+            <img src="" class="bottom-banner" id="bottom-banner-el" alt="Banner" onclick="openBannerModal(this.src)">
         </div>
 
-        <div class="links" id="links-container"></div>
+        <div class="glass-card" id="gallery-card">
+            <div class="gallery-title">Мои работы</div>
+            <div class="gallery-grid" id="gallery-container"></div>
+        </div>
 
-        <img src="" class="bottom-banner" id="bottom-banner-el" alt="Banner" onclick="openBannerModal()">
     </div>
 
     <script type="text/javascript">
@@ -206,6 +244,18 @@
             // Декор
             cornerGif: "sticker.gif",       
             bottomImage: "banner.jpg",
+
+            // ГАЛЕРЕЯ (Добавь свои файлы!)
+            gallery: [
+                { src: "pixel-wall-6eaacc58-7fca-47f3-aa9c-9fb6fd16bbf1.png" },
+                { src: "pixel-wall-1969b593-7765-4622-8a52-5482f9fa34e7.png" },
+                { src: "pixel-wall-3198a76c-431f-48c2-950a-64041375203e.png" },
+                { src: "pixel-wall-fc92f789-a639-417d-9088-b6051eeb001f.png" },
+                { src: "pixel-wall-2059f812-eec5-4037-8eb8-27dbb2849167.png" },
+                { src: "e3ca9315-53d9-43c5-810a-31610674950f.png" },
+                { src: "234a064f-b2c4-4c0a-af28-a49c9b23020a.png" }
+
+            ],
 
             typingWords: [ "Lonely Observer 👀", "Stand User ", "Интеллектуалыч 🧠" ],
 
@@ -235,16 +285,26 @@
         const modalImg = document.getElementById('banner-modal-img');
         const secretGifEl = document.getElementById('secret-gif-el');
 
-        gifEl.src = CONFIG.cornerGif; 
-        banEl.src = CONFIG.bottomImage; 
-        secretGifEl.src = CONFIG.secretRewardGif;
-        
-        // Заглушки
+        gifEl.src = CONFIG.cornerGif; banEl.src = CONFIG.bottomImage; secretGifEl.src = CONFIG.secretRewardGif;
         gifEl.onerror = () => gifEl.src = "https://media.tenor.com/On7kb94lM60AAAAj/pepe-dance.gif";
-        banEl.onerror = () => { banEl.src = "https://via.placeholder.com/600x338?text=Banner+16:9"; modalImg.src = banEl.src; };
+        banEl.onerror = () => { banEl.src = "https://via.placeholder.com/600x338?text=Banner+16:9"; };
         secretGifEl.onerror = () => secretGifEl.src = "https://media.tenor.com/M_Y7yowV4rQAAAAM/cat-vibe.gif";
 
-        function openBannerModal() { modalImg.src = banEl.src; document.getElementById('banner-modal').style.display = 'flex'; }
+        // GALLERY GEN
+        const galleryContainer = document.getElementById('gallery-container');
+        if(CONFIG.gallery.length > 0) {
+            CONFIG.gallery.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.innerHTML = `
+                    <img src="${item.src}" class="gallery-img" onclick="openBannerModal('${item.src}')" onerror="this.src='https://via.placeholder.com/300?text=Art'">
+                    <a href="${item.src}" download class="download-btn">⬇️</a>
+                `;
+                galleryContainer.appendChild(div);
+            });
+        } else { document.getElementById('gallery-card').style.display = 'none'; }
+
+        function openBannerModal(src) { modalImg.src = src || banEl.src; document.getElementById('banner-modal').style.display = 'flex'; }
         function closeBannerModal() { document.getElementById('banner-modal').style.display = 'none'; }
 
         const linksContainer = document.getElementById('links-container');
@@ -324,11 +384,8 @@
         function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(mouseX, mouseY); p.draw(); }); requestAnimationFrame(animateParticles); }
         animateParticles();
 
-        // === GAME LOGIC ===
-        let hp = 100; 
-        let maxHp = 100; 
+        let hp = 100; const maxHp = 100; let started = false; let combo = 0; let lastClickTime = 0;
         let currentBossLevel = 1;
-        let started = false; let combo = 0; let lastClickTime = 0;
 
         function hitBoss(e) {
             if (hp <= 0) return;
@@ -372,21 +429,20 @@
             secretGif.style.display = 'none';
 
             if (currentBossLevel === 1) {
-                // LEVEL 1 WIN
+                // LEVEL 1
                 title.innerText = "ТВОЯ НАГРАДА";
                 btn.className = "giant-chest-btn gold-chest";
                 btn.href = CONFIG.rewardLink;
                 btn.innerText = "🎁 ОТКРЫТЬ";
                 btn.onclick = null;
             } else {
-                // LEVEL 2 WIN (ALMOST FINAL)
+                // LEVEL 2
                 title.innerText = "СУПЕР НАГРАДА";
                 btn.className = "giant-chest-btn diamond-chest";
                 btn.removeAttribute('href');
                 btn.innerText = "💎 ОТКРЫТЬ";
                 
                 btn.onclick = function() {
-                    // Stage 1
                     this.innerText = "тут ничего нет...";
                     this.style.background = "#333";
                     this.style.color = "#aaa";
@@ -395,7 +451,6 @@
                     this.style.boxShadow = "none";
                     this.style.border = "2px solid #555";
                     
-                    // Stage 2
                     setTimeout(() => {
                         this.innerText = "Продолжить ➡️";
                         this.style.background = "#fff";
@@ -403,7 +458,6 @@
                         this.style.cursor = "pointer";
                         this.style.border = "2px solid white";
                         
-                        // Stage 3 (SHOW GIF 3)
                         this.onclick = function() {
                             this.style.display = 'none';
                             title.style.display = 'none';
@@ -422,23 +476,19 @@
             document.getElementById('boss-container').style.opacity = 0; 
             
             if (currentBossLevel === 1) {
-                // ПЕРЕХОД НА 2 УРОВЕНЬ
                 currentBossLevel = 2;
                 hp = 500; maxHp = 500;
-                document.getElementById('boss-avatar').src = CONFIG.avatarGif2; // GIF 2
+                document.getElementById('boss-avatar').src = CONFIG.avatarGif2; 
                 document.getElementById('boss-avatar').style.display = 'block'; 
                 started = false;
             } else if (currentBossLevel === 2) {
-                // ПОБЕДА (GIF 4)
                 currentBossLevel = 3;
-                document.getElementById('boss-avatar').src = CONFIG.finalSiteGif; // GIF 4
+                document.getElementById('boss-avatar').src = CONFIG.finalSiteGif; 
                 document.getElementById('boss-avatar').style.display = 'block'; 
-                // Отключаем бой
                 hp = 0;
                 document.getElementById('boss-avatar').onclick = null;
                 document.getElementById('boss-avatar').style.cursor = "default";
             }
-            
             document.getElementById('hp-bar').style.width = '100%';
         }
 

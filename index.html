@@ -7,108 +7,195 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* === ПЕРЕМЕННЫЕ === */
+        /* === 0. ПЕРЕМЕННЫЕ ТЕМ === */
         :root {
+            /* DARK THEME (DEFAULT) */
             --bg-gradient: linear-gradient(125deg, #0b0f19 0%, #180c2e 30%, #2a1b5c 60%, #00d4ff 100%);
-            --text-main: #ffffff; --text-sub: #8b9bb4; 
-            --card-bg: rgba(20, 23, 35, 0.75); --card-border: rgba(255, 255, 255, 0.08);
-            --btn-bg: rgba(255, 255, 255, 0.05); --btn-hover: rgba(255, 255, 255, 0.15);
-            --particle-color: rgba(255, 255, 255, 0.5); --blob-opacity: 0.6;
-        }
-        body.light-theme {
-            --bg-gradient: linear-gradient(125deg, #f5f7fa 0%, #c3cfe2 100%);
-            --text-main: #2c3e50; --text-sub: #546e7a; 
-            --card-bg: rgba(255, 255, 255, 0.8); --card-border: rgba(0, 0, 0, 0.05);
-            --btn-bg: rgba(0, 0, 0, 0.05); --btn-hover: rgba(0, 0, 0, 0.1);
-            --particle-color: rgba(0, 0, 0, 0.3); --blob-opacity: 0.3;
+            --text-main: #ffffff;
+            --text-sub: #8b9bb4;
+            --card-bg: rgba(20, 23, 35, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --particle-color: rgba(255, 255, 255, 0.5);
+            --blob-opacity: 0.6;
         }
 
-        /* === ОСНОВА === */
+        /* LIGHT THEME */
+        body.light-theme {
+            --bg-gradient: linear-gradient(125deg, #f5f7fa 0%, #c3cfe2 100%);
+            --text-main: #2c3e50;
+            --text-sub: #546e7a;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(0, 0, 0, 0.05);
+            --btn-bg: rgba(0, 0, 0, 0.05);
+            --btn-hover: rgba(0, 0, 0, 0.1);
+            --particle-color: rgba(0, 0, 0, 0.3);
+            --blob-opacity: 0.3;
+        }
+
+        /* === ГЛОБАЛЬНЫЕ НАСТРОЙКИ === */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gradient); background-size: 300% 300%; animation: deepGradient 15s ease infinite; color: var(--text-main); overflow: hidden; user-select: none; transition: background 0.5s ease, color 0.5s ease; position: relative; }
-        @keyframes deepGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
-        /* === ФОНОВЫЕ ЭЛЕМЕНТЫ === */
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; transition: transform 0.2s ease-out, opacity 0.5s; opacity: var(--blob-opacity); }
+
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            background-size: 300% 300%;
+            animation: deepGradient 15s ease infinite;
+            color: var(--text-main);
+            overflow-x: hidden; /* Скрываем гориз. скролл */
+            overflow-y: auto;   /* Разрешаем верт. скролл, если экран маленький */
+            user-select: none;
+            transition: background 0.5s ease, color 0.5s ease;
+            position: relative;
+        }
+
+        @keyframes deepGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* === CANVAS (ЧАСТИЦЫ) === */
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        /* === БЛОБЫ И ШУМ === */
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0;
+            transition: transform 0.2s ease-out, opacity 0.5s;
+            opacity: var(--blob-opacity);
+        }
         .blob-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: #2a1b5c; }
         .blob-2 { bottom: 10%; right: 10%; width: 350px; height: 350px; background: #00d4ff; opacity: 0.4; }
         .blob-3 { top: 40%; left: 40%; width: 300px; height: 300px; background: #ff0055; opacity: 0.2; }
-        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; opacity: 0.06; background-image: url("https://grainy-gradients.vercel.app/noise.svg"); }
-
-        /* === НОВЫЕ ДЕКОРАЦИИ (GIF + BANNER) === */
-        .corner-gif {
-            position: fixed; bottom: 20px; right: 20px;
-            width: 120px; height: auto; z-index: 20; /* Выше карточки */
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
-            pointer-events: none; /* Чтобы можно было кликать сквозь нее */
-            transition: 0.3s;
+        
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 2; opacity: 0.06;
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
         }
-
-        .bottom-banner {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 300px; aspect-ratio: 16 / 9;
-            object-fit: cover; border-radius: 12px;
-            z-index: 5; /* НИЖЕ основной карточки, как фон */
-            border: 1px solid var(--card-border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0.9;
+        
+        /* === UI КОНТРОЛЛЫ (ТЕМА) === */
+        .ui-controls {
+            position: absolute; top: 20px; right: 20px; z-index: 101;
         }
+        .icon-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main); font-size: 1.2em;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s; cursor: pointer;
+        }
+        .icon-btn:hover { transform: scale(1.1); background: var(--btn-hover); }
 
         /* === КАРТОЧКА === */
         .glass-card {
-            position: relative; background: var(--card-bg);
+            position: relative;
+            background: var(--card-bg);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-radius: 24px; border: 1px solid var(--card-border);
-            padding: 50px 40px 30px 40px; text-align: center;
-            max-width: 380px; width: 90%;
+            padding: 50px 40px 30px 40px;
+            text-align: center; max-width: 380px; width: 90%;
             transform-style: preserve-3d; transform: perspective(1000px);
-            z-index: 10; animation: breath 6s ease-in-out infinite;
+            z-index: 10;
+            animation: breath 6s ease-in-out infinite;
             transition: background 0.5s, border 0.5s;
+            margin: 20px 0; /* Отступ чтобы можно было скроллить */
         }
         @keyframes breath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.005); } }
 
         /* Boss Bar */
-        .boss-bar-container { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 24px 24px 0 0; overflow: hidden; opacity: 0; transition: opacity 0.5s; z-index: 100; }
-        .boss-hp { width: 100%; height: 100%; background: linear-gradient(90deg, #ff3333, #ff0055); transition: width 0.1s linear; }
+        .boss-bar-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: rgba(0,0,0,0.1); border-radius: 24px 24px 0 0; overflow: hidden;
+            opacity: 0; transition: opacity 0.5s; z-index: 100;
+        }
+        .boss-hp {
+            width: 100%; height: 100%; background: linear-gradient(90deg, #ff3333, #ff0055);
+            transition: width 0.1s linear;
+        }
 
-        /* UI Элементы */
-        .ui-controls { position: absolute; top: 20px; right: 20px; z-index: 101; }
-        .icon-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--text-main); font-size: 1.2em; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; cursor: pointer; }
-        .icon-btn:hover { transform: scale(1.1); background: var(--btn-hover); }
-
-        .music-wrapper { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 10px; transform: translateZ(50px); z-index: 101; }
-        .music-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.2em; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; transition: 0.3s; display: flex; align-items: center; justify-content: center; animation: pulseBtn 2s infinite; }
+        /* МУЗЫКАЛЬНЫЙ БЛОК */
+        .music-wrapper {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; align-items: center; gap: 10px;
+            transform: translateZ(50px); z-index: 101;
+        }
+        .music-btn {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 1.2em; cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center;
+            animation: pulseBtn 2s infinite; 
+        }
         .music-active { background: #5865F2; border-color: #5865F2; animation: none; box-shadow: 0 0 15px rgba(88, 101, 242, 0.6); }
         @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
 
-        .volume-slider { width: 0; opacity: 0; height: 10px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; -webkit-appearance: none; outline: none; transition: 0.4s ease; margin-right: 5px; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
-        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; cursor: pointer; border: 2px solid #5865F2; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        /* Ползунок громкости */
+        .volume-slider {
+            width: 0; opacity: 0; height: 10px; background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px; -webkit-appearance: none; outline: none;
+            transition: 0.4s ease; margin-right: 5px; cursor: pointer;
+            border: 2px solid #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+            background: #fff; cursor: pointer; border: 2px solid #5865F2;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
         .music-wrapper.active .volume-slider { width: 80px; opacity: 1; }
 
-        /* Контент */
-        .avatar { position: relative; z-index: 10; width: auto; max-width: 100%; max-height: 250px; height: auto; display: block; margin: 10px auto 10px auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); transition: transform 0.05s, filter 0.3s; transform: translateZ(20px); cursor: pointer; -webkit-user-drag: none; }
+        /* Аватарка */
+        .avatar {
+            position: relative; z-index: 10;
+            width: auto; max-width: 100%; max-height: 250px; height: auto;
+            display: block; margin: 10px auto 10px auto;
+            border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: transform 0.05s, filter 0.3s; transform: translateZ(20px);
+            cursor: pointer; -webkit-user-drag: none;
+        }
         .avatar:active { transform: scale(0.95) translateZ(20px); }
         .avatar.hit { filter: brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3); }
         .rage-mode { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; border: 2px solid red; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
+        /* Тексты */
         h1 { margin: 0; font-size: 2.2em; font-weight: 800; letter-spacing: -1px; transform: translateZ(15px); color: var(--text-main); }
         .subtitle { font-size: 1em; color: var(--text-sub); margin: 5px 0 10px 0; transform: translateZ(12px); }
         .typewriter { font-size: 1.1em; color: #66c0f4; margin: 0 0 25px 0; min-height: 1.5em; font-weight: 600; transform: translateZ(12px); }
-        
-        .status-box { background: rgba(0,0,0,0.05); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 25px; font-size: 0.85em; color: var(--text-main); text-align: left; transform: translateZ(10px); display: flex; flex-direction: column; gap: 8px; }
+
+        /* Статус бокс */
+        .status-box {
+            background: rgba(0,0,0,0.05); border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 15px; margin-bottom: 25px;
+            font-size: 0.85em; color: var(--text-main); text-align: left;
+            transform: translateZ(10px); display: flex; flex-direction: column; gap: 8px;
+        }
         .song-name { color: #66c0f4; font-weight: 600; }
-        
+
+        /* Ссылки */
         .links { display: flex; flex-direction: column; gap: 12px; transform: translateZ(30px); }
-        .btn { text-decoration: none; color: var(--text-main); padding: 16px; border-radius: 14px; transition: 0.3s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--btn-bg); border: 1px solid var(--card-border); backdrop-filter: blur(5px); cursor: pointer; }
+        .btn {
+            text-decoration: none; color: var(--text-main); padding: 16px;
+            border-radius: 14px; transition: 0.3s; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--btn-bg); border: 1px solid var(--card-border);
+            backdrop-filter: blur(5px); cursor: pointer;
+        }
         .btn:hover { background: var(--btn-hover); transform: translateY(-2px); }
+        
+        /* Стили брендов */
         .tg-btn:hover { border-color: #2AABEE; box-shadow: 0 0 20px rgba(42, 171, 238, 0.2); }
         .steam-btn:hover { border-color: #171a21; box-shadow: 0 0 20px rgba(102, 192, 244, 0.2); }
         .ds-btn:hover { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.2); }
 
-        /* Игровые эффекты */
+        /* Игровые элементы */
         #combo-counter { position: absolute; top: 60px; right: -20px; font-size: 1.5em; font-weight: 900; color: #ffd700; transform: rotate(15deg) translateZ(50px); opacity: 0; transition: opacity 0.2s; text-shadow: 0 0 10px rgba(0,0,0,0.5); pointer-events: none; z-index: 102; }
         #finish-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(60px); font-size: 3em; font-weight: 900; color: #ff0000; text-transform: uppercase; text-shadow: 0 0 20px black; opacity: 0; pointer-events: none; z-index: 103; width: 100%; text-align: center; }
         .blink { animation: blinker 0.2s linear infinite; }
@@ -127,12 +214,32 @@
         @keyframes chestBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* === НОВЫЙ CSS ДЛЯ КАРТИНКИ И ГИФКИ === */
+        .corner-gif {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 120px; height: auto; z-index: 20; 
+            pointer-events: none; 
+            transition: 0.3s;
+            /* УБРАЛ DROP-SHADOW */
+        }
+
+        .bottom-banner {
+            display: block;
+            width: 100%; /* На всю ширину карточки */
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 20px; /* Отступ от кнопок */
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transform: translateZ(5px); /* Легкий 3D эффект */
+        }
+
         /* === 📱 АДАПТАЦИЯ === */
         @media (max-width: 600px) {
             .glass-card { padding: 40px 20px 25px 20px; width: 95%; }
             h1 { font-size: 1.8em; } 
-            .corner-gif { width: 80px; bottom: 10px; right: 10px; } /* Гифка меньше на телефоне */
-            .bottom-banner { width: 200px; bottom: 15px; } /* Баннер меньше */
+            .corner-gif { width: 90px; bottom: 10px; right: 10px; } 
         }
     </style>
 </head>
@@ -145,7 +252,6 @@
     <canvas id="particles-canvas"></canvas>
 
     <img src="" class="corner-gif" id="corner-gif-el" alt="Sticker">
-    <img src="" class="bottom-banner" id="bottom-banner-el" alt="Banner">
 
     <div class="ui-controls">
         <button class="icon-btn theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
@@ -194,6 +300,9 @@
 
         <div class="links" id="links-container">
             </div>
+
+        <img src="" class="bottom-banner" id="bottom-banner-el" alt="Banner">
+
     </div>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
@@ -206,7 +315,7 @@
             name: "KillBracker",
             subtitle: "Люблю музыку и экспериментирую",
 
-            // ФАЙЛЫ КАРТИНОК ДЛЯ ДЕКОРА (Укажите свои названия)
+            // ФАЙЛЫ ДЕКОРА (Убедись, что они загружены в репозиторий)
             cornerGif: "sticker.gif",       // Гифка в углу
             bottomImage: "banner.jpg",      // Картинка 16:9 внизу
 
@@ -219,13 +328,13 @@
             songs: [
                 "Die With A Smile — Lady Gaga & Bruno Mars", 
                 "Running Up That Hill — Kate Bush", 
-                "End of Beginning — Djo",
+                "End of Beginning — Djo", 
                 "we fell in love in october — girl in red", 
                 "16 Lines — Lil Peep", 
-                "Hope — XXXTENTACION",
+                "Hope — XXXTENTACION", 
                 "カーストルーム — ZAQ", 
                 "Dance In The Game — ZAQ", 
-                "Atlantis — Seafret",
+                "Atlantis — Seafret", 
                 "Moog City 2 — C418", 
                 "SAVIOR — Hollywood Undead", 
                 "Skyfall — Adele", 
@@ -253,7 +362,7 @@
         const banEl = document.getElementById('bottom-banner-el');
         gifEl.src = CONFIG.cornerGif;
         banEl.src = CONFIG.bottomImage;
-        // Заглушки, если файлов нет
+        // Заглушки
         gifEl.onerror = () => gifEl.src = "https://media.tenor.com/On7kb94lM60AAAAj/pepe-dance.gif";
         banEl.onerror = () => banEl.src = "https://via.placeholder.com/320x180?text=Banner+16:9";
 

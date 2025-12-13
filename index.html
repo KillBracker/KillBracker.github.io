@@ -28,7 +28,6 @@
         body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gradient); background-size: 300% 300%; animation: deepGradient 15s ease infinite; color: var(--text-main); overflow-x: hidden; overflow-y: auto; user-select: none; transition: background 0.5s ease, color 0.5s ease; position: relative; }
         @keyframes deepGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        /* === ФОН === */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .blob { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; transition: transform 0.2s ease-out, opacity 0.5s; opacity: var(--blob-opacity); }
         .blob-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: #2a1b5c; }
@@ -41,18 +40,17 @@
         .bottom-banner { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; margin-top: 20px; border: 1px solid var(--card-border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: translateZ(5px); cursor: pointer; transition: transform 0.2s; }
         .bottom-banner:hover { transform: translateZ(5px) scale(1.02); }
 
-        /* Модалка баннера */
         #banner-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 0.3s forwards; }
         .banner-modal-content { max-width: 90%; max-height: 80vh; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
         .banner-close-btn { position: absolute; top: 20px; right: 30px; font-size: 2.5em; color: white; cursor: pointer; transition: 0.3s; }
         .banner-close-btn:hover { color: #ff3333; }
 
         /* === КАРТОЧКА === */
-        .glass-card { position: relative; background: var(--card-bg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid var(--card-border); padding: 50px 40px 30px 40px; text-align: center; max-width: 600px; width: 90%; transform-style: preserve-3d; z-index: 10; margin: 20px 0; }
+        .glass-card { position: relative; background: var(--card-bg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid var(--card-border); padding: 50px 40px 30px 40px; text-align: center; max-width: 600px; width: 90%; transform-style: preserve-3d; z-index: 10; margin: 20px 0; transition: border 0.5s; }
+        
         .boss-bar-container { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 24px 24px 0 0; overflow: hidden; opacity: 0; transition: opacity 0.5s; z-index: 100; }
         .boss-hp { width: 100%; height: 100%; background: linear-gradient(90deg, #ff3333, #ff0055); transition: width 0.1s linear; }
 
-        /* UI Controls */
         .ui-controls { position: absolute; top: 20px; right: 20px; z-index: 101; }
         .icon-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--text-main); font-size: 1.2em; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; cursor: pointer; }
         .icon-btn:hover { transform: scale(1.1); background: var(--btn-hover); }
@@ -65,14 +63,12 @@
         .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; cursor: pointer; border: 2px solid #5865F2; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .music-wrapper.active .volume-slider { width: 80px; opacity: 1; }
 
-        /* Avatar */
         .avatar { position: relative; z-index: 10; width: auto; max-width: 100%; max-height: 250px; height: auto; display: block; margin: 10px auto 10px auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); transition: transform 0.05s, filter 0.3s; transform: translateZ(20px); cursor: pointer; -webkit-user-drag: none; }
         .avatar:active { transform: scale(0.95) translateZ(20px); }
         .avatar.hit { filter: brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3); }
         .rage-mode { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; border: 2px solid red; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
-        /* Text & Links */
         h1 { margin: 0; font-size: 2.2em; font-weight: 800; letter-spacing: -1px; transform: translateZ(15px); color: var(--text-main); }
         .subtitle { font-size: 1em; color: var(--text-sub); margin: 5px 0 10px 0; transform: translateZ(12px); }
         .typewriter { font-size: 1.1em; color: #66c0f4; margin: 0 0 25px 0; min-height: 1.5em; font-weight: 600; transform: translateZ(12px); }
@@ -86,7 +82,6 @@
         .steam-btn:hover { border-color: #171a21; box-shadow: 0 0 20px rgba(102, 192, 244, 0.2); }
         .ds-btn:hover { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.2); }
 
-        /* Game UI */
         #combo-counter { position: absolute; top: 60px; right: -20px; font-size: 1.5em; font-weight: 900; color: #ffd700; transform: rotate(15deg) translateZ(50px); opacity: 0; transition: opacity 0.2s; text-shadow: 0 0 10px rgba(0,0,0,0.5); pointer-events: none; z-index: 102; }
         #finish-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(60px); font-size: 3em; font-weight: 900; color: #ff0000; text-transform: uppercase; text-shadow: 0 0 20px black; opacity: 0; pointer-events: none; z-index: 103; width: 100%; text-align: center; }
         .blink { animation: blinker 0.2s linear infinite; }
@@ -97,21 +92,22 @@
         .normal { color: #ffaa00; }
         @keyframes floatUp { 100% { opacity: 0; transform: translateY(-80px) scale(1.2); } }
 
-        /* Экран победы и сундуки */
+        /* ЭКРАН ПОБЕДЫ */
         #reward-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 1s forwards; padding: 20px; text-align: center; }
         
-        /* Золотой сундук */
         .gold-chest { background: white; color: #d35400; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        /* Алмазный сундук */
         .diamond-chest { background: linear-gradient(135deg, #e0f7fa 0%, #00e5ff 100%); color: #006064; border: 2px solid white; box-shadow: 0 0 40px #00e5ff; text-shadow: 0 0 5px white; }
 
-        .giant-chest-btn { font-size: 2em; padding: 20px 40px; border: none; border-radius: 20px; text-decoration: none; animation: chestBounce 1s infinite alternate; cursor: pointer; margin-bottom: 20px; display: inline-block; font-weight: 800; }
+        .giant-chest-btn { font-size: 2em; padding: 20px 40px; border: none; border-radius: 20px; text-decoration: none; animation: chestBounce 1s infinite alternate; cursor: pointer; margin-bottom: 20px; display: inline-block; font-weight: 800; transition: 0.3s; }
         .back-btn { font-size: 1.2em; padding: 10px 30px; background: rgba(0,0,0,0.2); color: white; border: 2px solid white; border-radius: 15px; cursor: pointer; transition: 0.3s; }
         .back-btn:hover { background: white; color: #333; }
+        
+        /* Скрытая картинка в награде */
+        #secret-gif-el { max-width: 300px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
+
         @keyframes chestBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Media */
         @media (max-width: 600px) {
             .glass-card { padding: 30px 20px; width: 95%; }
             h1 { font-size: 1.8em; } 
@@ -138,7 +134,11 @@
 
     <div id="reward-overlay">
         <h1 id="reward-title-el" style="font-size: 2.5em; color: white; margin-bottom: 30px; text-shadow: 0 5px 10px rgba(0,0,0,0.2);">ТВОЯ НАГРАДА</h1>
+        
+        <img src="" id="secret-gif-el">
+
         <a id="reward-btn-el" target="_blank" class="giant-chest-btn gold-chest">🎁 ОТКРЫТЬ</a>
+        
         <br>
         <button class="back-btn" onclick="closeReward()">Вернуться на сайт</button>
     </div>
@@ -197,11 +197,15 @@
             name: "KillBracker",
             subtitle: "Люблю музыку и экспериментирую",
 
+            // 4 ФАЙЛА ГИФОК (ЗАГРУЗИ ИХ!)
+            avatarGif1: "avatar.gif",       // Гифка №1 (Начало)
+            avatarGif2: "boss2.gif",        // Гифка №2 (Второй босс)
+            secretRewardGif: "secret.gif",  // Гифка №3 (В сундуке)
+            finalSiteGif: "final.gif",      // Гифка №4 (На сайте в конце)
+
+            // Декор
             cornerGif: "sticker.gif",       
             bottomImage: "banner.jpg",
-            
-            // ГИФКА ВТОРОГО БОССА (Сделай файл boss2.gif и залей на гитхаб!)
-            secondAvatarGif: "boss2.gif",
 
             typingWords: [ "Lonely Observer 👀", "Stand User ", "Интеллектуалыч 🧠" ],
 
@@ -229,9 +233,16 @@
         const gifEl = document.getElementById('corner-gif-el');
         const banEl = document.getElementById('bottom-banner-el');
         const modalImg = document.getElementById('banner-modal-img');
-        gifEl.src = CONFIG.cornerGif; banEl.src = CONFIG.bottomImage;
+        const secretGifEl = document.getElementById('secret-gif-el');
+
+        gifEl.src = CONFIG.cornerGif; 
+        banEl.src = CONFIG.bottomImage; 
+        secretGifEl.src = CONFIG.secretRewardGif;
+        
+        // Заглушки
         gifEl.onerror = () => gifEl.src = "https://media.tenor.com/On7kb94lM60AAAAj/pepe-dance.gif";
         banEl.onerror = () => { banEl.src = "https://via.placeholder.com/600x338?text=Banner+16:9"; modalImg.src = banEl.src; };
+        secretGifEl.onerror = () => secretGifEl.src = "https://media.tenor.com/M_Y7yowV4rQAAAAM/cat-vibe.gif";
 
         function openBannerModal() { modalImg.src = banEl.src; document.getElementById('banner-modal').style.display = 'flex'; }
         function closeBannerModal() { document.getElementById('banner-modal').style.display = 'none'; }
@@ -268,7 +279,6 @@
         }
         slider.addEventListener('input', (e) => bgMusic.volume = e.target.value);
 
-        // TYPING
         const words = CONFIG.typingWords; let i = 0; let timer;
         function typingEffect() {
             let word = words[i].split("");
@@ -286,7 +296,6 @@
         }
         typingEffect();
 
-        // THEME
         function toggleTheme() {
             document.body.classList.toggle('light-theme'); const isLight = document.body.classList.contains('light-theme');
             localStorage.setItem('theme', isLight ? 'light' : 'dark'); updateThemeUI(isLight); sfxClick();
@@ -298,7 +307,6 @@
         }
         const savedTheme = localStorage.getItem('theme'); if (savedTheme === 'light') { document.body.classList.add('light-theme'); updateThemeUI(true); }
 
-        // PARTICLES
         const canvas = document.getElementById('particles-canvas'); const ctx = canvas.getContext('2d');
         let particles = []; function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas); resizeCanvas();
@@ -316,7 +324,7 @@
         function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(mouseX, mouseY); p.draw(); }); requestAnimationFrame(animateParticles); }
         animateParticles();
 
-        // === BOSS GAME LOGIC (LEVEL 1 & 2) ===
+        // === GAME LOGIC ===
         let hp = 100; 
         let maxHp = 100; 
         let currentBossLevel = 1;
@@ -355,24 +363,30 @@
             playTone(400, 'sine', 0.1); setTimeout(() => playTone(600, 'sine', 0.2), 150); 
             launchConfetti(); 
             
-            // Настройка награды в зависимости от уровня
             const title = document.getElementById('reward-title-el');
             const btn = document.getElementById('reward-btn-el');
+            const secretGif = document.getElementById('secret-gif-el');
             
+            title.style.display = 'block';
+            btn.style.display = 'inline-block';
+            secretGif.style.display = 'none';
+
             if (currentBossLevel === 1) {
-                // Уровень 1 - Золотой
+                // LEVEL 1 WIN
                 title.innerText = "ТВОЯ НАГРАДА";
                 btn.className = "giant-chest-btn gold-chest";
                 btn.href = CONFIG.rewardLink;
                 btn.innerText = "🎁 ОТКРЫТЬ";
-                btn.onclick = null; // Обычная ссылка
+                btn.onclick = null;
             } else {
-                // Уровень 2 - Алмазный
+                // LEVEL 2 WIN (ALMOST FINAL)
                 title.innerText = "СУПЕР НАГРАДА";
                 btn.className = "giant-chest-btn diamond-chest";
-                btn.removeAttribute('href'); // Убираем ссылку
+                btn.removeAttribute('href');
                 btn.innerText = "💎 ОТКРЫТЬ";
+                
                 btn.onclick = function() {
+                    // Stage 1
                     this.innerText = "тут ничего нет...";
                     this.style.background = "#333";
                     this.style.color = "#aaa";
@@ -380,6 +394,22 @@
                     this.style.animation = "none";
                     this.style.boxShadow = "none";
                     this.style.border = "2px solid #555";
+                    
+                    // Stage 2
+                    setTimeout(() => {
+                        this.innerText = "Продолжить ➡️";
+                        this.style.background = "#fff";
+                        this.style.color = "#333";
+                        this.style.cursor = "pointer";
+                        this.style.border = "2px solid white";
+                        
+                        // Stage 3 (SHOW GIF 3)
+                        this.onclick = function() {
+                            this.style.display = 'none';
+                            title.style.display = 'none';
+                            secretGif.style.display = 'block';
+                        };
+                    }, 1500);
                 };
             }
 
@@ -388,32 +418,32 @@
 
         function closeReward() { 
             document.getElementById('reward-overlay').style.display = 'none'; 
-            document.getElementById('boss-avatar').style.display = 'block'; 
             document.getElementById('boss-avatar').classList.remove('rage-mode');
             document.getElementById('boss-container').style.opacity = 0; 
             
-            // Логика переключения уровня
             if (currentBossLevel === 1) {
-                // Переходим на 2 уровень
+                // ПЕРЕХОД НА 2 УРОВЕНЬ
                 currentBossLevel = 2;
-                hp = 500; // Много ХП
-                maxHp = 500;
-                // Меняем гифку (если файла нет, останется старая или заглушка)
-                const newGif = new Image();
-                newGif.src = CONFIG.secondAvatarGif;
-                newGif.onload = () => document.getElementById('boss-avatar').src = CONFIG.secondAvatarGif;
-            } else {
-                // Остаемся на 2 уровне или сбрасываем (тут просто ресет ХП)
-                hp = 500;
+                hp = 500; maxHp = 500;
+                document.getElementById('boss-avatar').src = CONFIG.avatarGif2; // GIF 2
+                document.getElementById('boss-avatar').style.display = 'block'; 
+                started = false;
+            } else if (currentBossLevel === 2) {
+                // ПОБЕДА (GIF 4)
+                currentBossLevel = 3;
+                document.getElementById('boss-avatar').src = CONFIG.finalSiteGif; // GIF 4
+                document.getElementById('boss-avatar').style.display = 'block'; 
+                // Отключаем бой
+                hp = 0;
+                document.getElementById('boss-avatar').onclick = null;
+                document.getElementById('boss-avatar').style.cursor = "default";
             }
             
             document.getElementById('hp-bar').style.width = '100%';
-            started = false; 
         }
 
         if (window.innerWidth > 600) { window.addEventListener('mousemove', (e) => { const x = (window.innerWidth - e.clientX * 2) / 100; const y = (window.innerHeight - e.clientY * 2) / 100; document.querySelector('.blob-1').style.transform = `translate(${x}px, ${y}px)`; document.querySelector('.blob-2').style.transform = `translate(${-x}px, ${-y}px)`; }); }
         function launchConfetti() { var end = Date.now() + (3 * 1000); (function frame() { confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } }); confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } }); if (Date.now() < end) requestAnimationFrame(frame); }()); }
-        
         const songsList = CONFIG.songs;
         function changeSong() { const el = document.getElementById('current-song'); el.style.opacity = 0; setTimeout(() => { el.innerText = songsList[Math.floor(Math.random() * songsList.length)]; el.style.opacity = 1; }, 300); }
         setInterval(changeSong, 120000); changeSong();

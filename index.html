@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KillBracker | Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
-        /* Живой фон */
+        /* === ОСНОВНОЙ ФОН === */
         body {
             margin: 0;
             padding: 0;
@@ -18,8 +20,15 @@
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             color: white;
-            overflow: hidden; /* Чтобы не было полос прокрутки при кликах */
-            user-select: none; /* Чтобы текст не выделялся при кликах */
+            overflow-x: hidden; /* Скрываем горизонтальную прокрутку */
+            user-select: none;
+            transition: background 1s ease;
+        }
+
+        /* ЗОЛОТОЙ РЕЖИМ (LVL 10) */
+        body.gold-mode {
+            background: linear-gradient(-45deg, #b8860b, #daa520, #ffd700, #2a475e);
+            background-size: 400% 400%;
         }
 
         @keyframes gradient {
@@ -28,75 +37,90 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Стеклянная карточка */
+        /* КАРТОЧКА */
         .glass-card {
-            position: relative; /* Для позиционирования музыки и уровня */
-            background: rgba(23, 26, 33, 0.8); 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            background: rgba(23, 26, 33, 0.85); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border-radius: 20px;
+            border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
             text-align: center;
             max-width: 350px;
             width: 90%;
-            transform-style: preserve-3d; /* Для 3D эффекта */
+            transform-style: preserve-3d;
             transform: perspective(1000px);
+            transition: border 0.5s ease;
+            margin: 20px 0; /* Отступы сверху/снизу для мобильных */
+        }
+
+        .glass-card.gold-border {
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
         }
 
         /* Кнопка музыки */
         .music-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
             font-size: 1.2em;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
             transition: 0.3s;
             z-index: 10;
         }
-        .music-btn:hover { background: rgba(102, 192, 244, 0.5); transform: scale(1.1); }
-        .music-active { background: rgba(88, 101, 242, 0.8); box-shadow: 0 0 15px #5865F2; animation: spin 4s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .music-btn:hover { background: rgba(102, 192, 244, 0.5); }
+        .music-active { background: rgba(88, 101, 242, 0.8); color: #fff; }
 
         /* Уровень (XP) */
         .level-badge {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 0.8em;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
             color: #66c0f4;
             border: 1px solid rgba(102, 192, 244, 0.3);
             font-weight: bold;
+            transform: translateZ(20px);
         }
+        .level-badge.gold-text { color: #ffd700; border-color: #ffd700; }
 
-        /* Аватарка - КВАДРАТНАЯ */
+        /* === АВАТАРКА (СВОБОДНАЯ ФОРМА) === */
         .avatar {
-            width: 140px;
-            height: 140px;
-            /* Скругление 20px делает мягкий квадрат */
-            border-radius: 20px; 
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 15px;
-            object-fit: cover;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            /* Убираем жесткие width/height */
+            width: auto; 
+            max-width: 100%;      /* Не шире карточки */
+            max-height: 250px;    /* Ограничение по высоте, чтобы не была гигантской */
+            height: auto;         /* Высота подстроится под пропорции */
+            display: block;       /* Чтобы margin auto работал корректно */
+            margin: 0 auto 15px auto; /* Центрируем и добавляем отступ снизу */
+            
+            border-radius: 8px;   /* Легкое скругление углов */
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
             transition: transform 0.1s;
-            cursor: pointer; /* Показывает, что можно кликать */
-            transform: translateZ(20px); /* Аватарка немного выпирает вперед в 3D */
+            cursor: pointer;
+            transform: translateZ(20px);
         }
         .avatar:active { transform: scale(0.95) translateZ(20px); }
 
-        h1 { margin: 0; font-size: 2em; letter-spacing: 1px; transform: translateZ(10px); }
+        h1 { margin: 0; font-size: 2em; letter-spacing: 1px; transform: translateZ(15px); word-wrap: break-word;}
         
+        .pro-title {
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
         .typewriter {
             font-size: 1.1em;
             color: #c7d5e0;
@@ -106,14 +130,13 @@
             transform: translateZ(10px);
         }
 
-        /* Кнопки ссылок */
         .links { display: flex; flex-direction: column; gap: 15px; transform: translateZ(30px); }
         
         .btn {
             text-decoration: none;
             color: white;
             padding: 14px;
-            border-radius: 12px;
+            border-radius: 8px;
             transition: 0.3s;
             font-weight: bold;
             display: flex;
@@ -124,46 +147,63 @@
             overflow: hidden;
         }
 
-        /* Telegram */
         .tg-btn { background: rgba(42, 171, 238, 0.15); border: 1px solid rgba(42, 171, 238, 0.3); }
         .tg-btn:hover { background: rgba(42, 171, 238, 0.4); box-shadow: 0 0 20px rgba(42, 171, 238, 0.3); }
 
-        /* Steam */
         .steam-btn { background: rgba(23, 26, 33, 0.6); border: 1px solid rgba(102, 192, 244, 0.3); }
         .steam-btn:hover { background: linear-gradient(45deg, #1b2838, #2a475e); box-shadow: 0 0 20px rgba(102, 192, 244, 0.3); }
 
-        /* Discord */
         .ds-btn { background: rgba(88, 101, 242, 0.15); border: 1px solid rgba(88, 101, 242, 0.3); }
         .ds-btn:hover { background: rgba(88, 101, 242, 0.4); box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
 
-        /* Анимация вылетающего XP */
+        /* === СУНДУЧОК С НАГРАДОЙ === */
+        .chest-btn {
+            display: none;
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            border: 2px solid #fff;
+            color: #333;
+            text-shadow: none;
+            animation: bounce 2s infinite;
+        }
+        .chest-btn:hover {
+            box-shadow: 0 0 30px #ffd700;
+            transform: scale(1.05);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        /* Анимация XP */
         .float-xp {
             position: absolute;
             color: #66c0f4;
             font-weight: bold;
             pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
-            font-size: 1.2em;
+            animation: floatUp 0.8s ease-out forwards;
+            font-size: 1.5em;
             z-index: 100;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            text-shadow: 0 0 5px rgba(0,0,0,1);
         }
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1.2); }
         }
     </style>
 </head>
 <body>
 
-    <div class="glass-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+    <div class="glass-card" id="main-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
         <button class="music-btn" onclick="toggleMusic()">🎵</button>
         <audio id="bg-music" loop src="song.mp3"></audio>
 
-        <div class="level-badge">Lvl <span id="level-display">1</span></div>
+        <div class="level-badge" id="lvl-badge">Lvl <span id="level-display">1</span></div>
 
         <img src="avatar.gif" alt="Avatar" class="avatar" onclick="clickXP(event)" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
         
-        <h1>KillBracker</h1>
+        <h1 id="nickname">KillBracker</h1>
         
         <div class="typewriter" id="typing-text"></div>
 
@@ -171,17 +211,20 @@
             <a href="https://t.me/KillBracker" target="_blank" class="btn tg-btn">✈️ Telegram</a>
             <a href="https://steamcommunity.com/id/lonelyobserver/" target="_blank" class="btn steam-btn">🎮 Steam Profile</a>
             <a href="https://discord.com/users/296367874933784579" target="_blank" class="btn ds-btn">👾 Discord: killbracker</a>
+            
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="btn chest-btn" id="secret-chest">
+                🎁 Секретная Награда
+            </a>
         </div>
     </div>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
 
     <script>
-        /* === 1. ПЕЧАТНАЯ МАШИНКА === */
+        /* 1. ПЕЧАТНАЯ МАШИНКА */
         const words = ["Leveling Up...", "Lonely Observer", "Steam User", "Discord: killbracker"];
         let i = 0;
         let timer;
-
         function typingEffect() {
             let word = words[i].split("");
             var loopTyping = function() {
@@ -195,7 +238,6 @@
             };
             loopTyping();
         }
-
         function deletingEffect() {
             let word = words[i].split("");
             var loopDeleting = function() {
@@ -213,54 +255,80 @@
         }
         typingEffect();
 
-        /* === 2. МУЗЫКАЛЬНЫЙ ПЛЕЕР === */
+        /* 2. МУЗЫКА */
         const music = document.getElementById("bg-music");
         const musicBtn = document.querySelector(".music-btn");
         let isPlaying = false;
-
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
                 musicBtn.classList.remove("music-active");
                 musicBtn.innerHTML = "🎵";
             } else {
-                music.volume = 0.3; // Громкость 30% чтобы не орало
-                music.play().catch(e => alert("Сначала загрузите файл song.mp3 в репозиторий!"));
+                music.volume = 0.3;
+                music.play().catch(e => console.log("Audio not loaded"));
                 musicBtn.classList.add("music-active");
                 musicBtn.innerHTML = "⏸️";
             }
             isPlaying = !isPlaying;
         }
 
-        /* === 3. СИСТЕМА XP (КЛИКЕР) === */
-        // Загружаем сохраненный опыт или начинаем с 0
+        /* 3. XP СИСТЕМА + КОМБО */
         let xp = localStorage.getItem('kb_xp') ? parseInt(localStorage.getItem('kb_xp')) : 0;
-        updateLevel();
+        let hasCelebrated = false;
+        
+        checkLevelEffects(); 
 
         function clickXP(event) {
             xp++;
-            localStorage.setItem('kb_xp', xp); // Сохраняем прогресс
-            updateLevel();
-
-            // Создаем плавающий текст
+            localStorage.setItem('kb_xp', xp);
+            
             const floatText = document.createElement("div");
             floatText.classList.add("float-xp");
             floatText.innerText = "+1 XP";
-            
-            // Позиция текста там, где был клик
             floatText.style.left = event.clientX + "px";
             floatText.style.top = event.clientY + "px";
-            
             document.body.appendChild(floatText);
+            setTimeout(() => { floatText.remove(); }, 800);
 
-            // Удаляем элемент после анимации
-            setTimeout(() => { floatText.remove(); }, 1000);
+            checkLevelEffects();
         }
 
-        function updateLevel() {
-            // Каждые 10 кликов - новый уровень (простая формула)
+        function checkLevelEffects() {
             let level = Math.floor(xp / 10) + 1;
             document.getElementById("level-display").innerText = level;
+
+            if (level >= 10) {
+                activateGoldMode();
+                if (!hasCelebrated && level === 10) {
+                    launchConfetti();
+                    hasCelebrated = true;
+                }
+            }
+        }
+
+        function activateGoldMode() {
+            document.body.classList.add("gold-mode");
+            const nickElement = document.getElementById("nickname");
+            nickElement.innerHTML = "👑 PRO KillBracker";
+            nickElement.classList.add("pro-title");
+            document.getElementById("main-card").classList.add("gold-border");
+            document.getElementById("lvl-badge").classList.add("gold-text");
+            document.getElementById("secret-chest").style.display = "flex";
+        }
+
+        function launchConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         }
     </script>
 </body>

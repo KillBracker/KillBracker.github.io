@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KillBracker | Links</title>
+    <title>KillBracker | Profile</title>
     <style>
         /* Живой фон */
         body {
             margin: 0;
             padding: 0;
-            min-height: 100vh; /* Используем min-height чтобы на мобильных не обрезалось */
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(-45deg, #1b2838, #2a475e, #0f111a, #5865F2);
+            background: linear-gradient(-45deg, #0f111a, #1b2838, #2a475e, #5865F2);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             color: white;
+            overflow: hidden; /* Чтобы не было полос прокрутки при кликах */
+            user-select: none; /* Чтобы текст не выделялся при кликах */
         }
 
         @keyframes gradient {
@@ -28,31 +30,72 @@
 
         /* Стеклянная карточка */
         .glass-card {
-            background: rgba(23, 26, 33, 0.7); 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            position: relative; /* Для позиционирования музыки и уровня */
+            background: rgba(23, 26, 33, 0.8); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
             text-align: center;
             max-width: 350px;
             width: 90%;
-            margin: 20px; /* Отступ чтобы на мобилках не прилипало к краям */
+            transform-style: preserve-3d; /* Для 3D эффекта */
+            transform: perspective(1000px);
         }
 
-        /* Аватарка */
-        .avatar {
-            width: 130px;
-            height: 130px;
+        /* Кнопка музыки */
+        .music-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 3px solid #66c0f4; 
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .music-btn:hover { background: rgba(102, 192, 244, 0.5); transform: scale(1.1); }
+        .music-active { background: rgba(88, 101, 242, 0.8); box-shadow: 0 0 15px #5865F2; animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Уровень (XP) */
+        .level-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            color: #66c0f4;
+            border: 1px solid rgba(102, 192, 244, 0.3);
+            font-weight: bold;
+        }
+
+        /* Аватарка - КВАДРАТНАЯ */
+        .avatar {
+            width: 140px;
+            height: 140px;
+            /* Скругление 20px делает мягкий квадрат */
+            border-radius: 20px; 
+            border: 2px solid rgba(255, 255, 255, 0.2);
             margin-bottom: 15px;
             object-fit: cover;
-            box-shadow: 0 0 20px rgba(102, 192, 244, 0.6);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s;
+            cursor: pointer; /* Показывает, что можно кликать */
+            transform: translateZ(20px); /* Аватарка немного выпирает вперед в 3D */
         }
+        .avatar:active { transform: scale(0.95) translateZ(20px); }
 
-        h1 { margin: 0; font-size: 2em; letter-spacing: 1px; }
+        h1 { margin: 0; font-size: 2em; letter-spacing: 1px; transform: translateZ(10px); }
         
         .typewriter {
             font-size: 1.1em;
@@ -60,85 +103,82 @@
             margin: 10px 0 30px 0;
             min-height: 1.5em;
             font-weight: 300; 
+            transform: translateZ(10px);
         }
 
         /* Кнопки ссылок */
-        .links { display: flex; flex-direction: column; gap: 15px; }
+        .links { display: flex; flex-direction: column; gap: 15px; transform: translateZ(30px); }
         
         .btn {
             text-decoration: none;
             color: white;
             padding: 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             transition: 0.3s;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Стили кнопок */
-        
         /* Telegram */
-        .tg-btn {
-            background: rgba(42, 171, 238, 0.2);
-            border: 1px solid rgba(42, 171, 238, 0.4);
-        }
-        .tg-btn:hover {
-            background: rgba(42, 171, 238, 0.6);
-            box-shadow: 0 0 15px rgba(42, 171, 238, 0.4);
-        }
+        .tg-btn { background: rgba(42, 171, 238, 0.15); border: 1px solid rgba(42, 171, 238, 0.3); }
+        .tg-btn:hover { background: rgba(42, 171, 238, 0.4); box-shadow: 0 0 20px rgba(42, 171, 238, 0.3); }
 
         /* Steam */
-        .steam-btn {
-            background: rgba(23, 26, 33, 0.6);
-            border: 1px solid rgba(102, 192, 244, 0.4);
-        }
-        .steam-btn:hover {
-            background: linear-gradient(45deg, #1b2838, #2a475e);
-            box-shadow: 0 0 15px rgba(102, 192, 244, 0.4);
-        }
+        .steam-btn { background: rgba(23, 26, 33, 0.6); border: 1px solid rgba(102, 192, 244, 0.3); }
+        .steam-btn:hover { background: linear-gradient(45deg, #1b2838, #2a475e); box-shadow: 0 0 20px rgba(102, 192, 244, 0.3); }
 
         /* Discord */
-        .ds-btn {
-            background: rgba(88, 101, 242, 0.2); /* Фирменный цвет Discord */
-            border: 1px solid rgba(88, 101, 242, 0.4);
-        }
-        .ds-btn:hover {
-            background: rgba(88, 101, 242, 0.6);
-            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
-        }
+        .ds-btn { background: rgba(88, 101, 242, 0.15); border: 1px solid rgba(88, 101, 242, 0.3); }
+        .ds-btn:hover { background: rgba(88, 101, 242, 0.4); box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
 
-        .btn:active { transform: scale(0.98); }
+        /* Анимация вылетающего XP */
+        .float-xp {
+            position: absolute;
+            color: #66c0f4;
+            font-weight: bold;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            font-size: 1.2em;
+            z-index: 100;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="glass-card">
-        <img src="avatar.gif" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
+    <div class="glass-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+        <button class="music-btn" onclick="toggleMusic()">🎵</button>
+        <audio id="bg-music" loop src="song.mp3"></audio>
+
+        <div class="level-badge">Lvl <span id="level-display">1</span></div>
+
+        <img src="avatar.gif" alt="Avatar" class="avatar" onclick="clickXP(event)" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
         
         <h1>KillBracker</h1>
         
         <div class="typewriter" id="typing-text"></div>
 
         <div class="links">
-            <a href="https://t.me/KillBracker" target="_blank" class="btn tg-btn">
-                ✈️ Telegram
-            </a>
-            
-            <a href="https://steamcommunity.com/id/lonelyobserver/" target="_blank" class="btn steam-btn">
-                🎮 Steam Profile
-            </a>
-
-            <a href="https://discord.com/users/296367874933784579" target="_blank" class="btn ds-btn">
-                👾 Discord: killbracker
-            </a>
+            <a href="https://t.me/KillBracker" target="_blank" class="btn tg-btn">✈️ Telegram</a>
+            <a href="https://steamcommunity.com/id/lonelyobserver/" target="_blank" class="btn steam-btn">🎮 Steam Profile</a>
+            <a href="https://discord.com/users/296367874933784579" target="_blank" class="btn ds-btn">👾 Discord: killbracker</a>
         </div>
     </div>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+
     <script>
-        const words = ["Lonely Observer", "Steam User", "Discord: killbracker", "Welcome"];
+        /* === 1. ПЕЧАТНАЯ МАШИНКА === */
+        const words = ["Leveling Up...", "Lonely Observer", "Steam User", "Discord: killbracker"];
         let i = 0;
         let timer;
 
@@ -171,8 +211,57 @@
             };
             loopDeleting();
         }
-
         typingEffect();
+
+        /* === 2. МУЗЫКАЛЬНЫЙ ПЛЕЕР === */
+        const music = document.getElementById("bg-music");
+        const musicBtn = document.querySelector(".music-btn");
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.classList.remove("music-active");
+                musicBtn.innerHTML = "🎵";
+            } else {
+                music.volume = 0.3; // Громкость 30% чтобы не орало
+                music.play().catch(e => alert("Сначала загрузите файл song.mp3 в репозиторий!"));
+                musicBtn.classList.add("music-active");
+                musicBtn.innerHTML = "⏸️";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        /* === 3. СИСТЕМА XP (КЛИКЕР) === */
+        // Загружаем сохраненный опыт или начинаем с 0
+        let xp = localStorage.getItem('kb_xp') ? parseInt(localStorage.getItem('kb_xp')) : 0;
+        updateLevel();
+
+        function clickXP(event) {
+            xp++;
+            localStorage.setItem('kb_xp', xp); // Сохраняем прогресс
+            updateLevel();
+
+            // Создаем плавающий текст
+            const floatText = document.createElement("div");
+            floatText.classList.add("float-xp");
+            floatText.innerText = "+1 XP";
+            
+            // Позиция текста там, где был клик
+            floatText.style.left = event.clientX + "px";
+            floatText.style.top = event.clientY + "px";
+            
+            document.body.appendChild(floatText);
+
+            // Удаляем элемент после анимации
+            setTimeout(() => { floatText.remove(); }, 1000);
+        }
+
+        function updateLevel() {
+            // Каждые 10 кликов - новый уровень (простая формула)
+            let level = Math.floor(xp / 10) + 1;
+            document.getElementById("level-display").innerText = level;
+        }
     </script>
 </body>
 </html>

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KillBracker | Profile</title>
+    <title>KillBracker | Boss Fight</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* === 1. НОВЫЙ ИНТЕРЕСНЫЙ ФОН (Deep Cyberpunk) === */
+        /* === ФОН === */
         body {
             margin: 0;
             padding: 0;
@@ -16,14 +16,12 @@
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Глубокий сложный градиент */
             background: linear-gradient(125deg, #0b0f19 0%, #180c2e 30%, #2a1b5c 60%, #00d4ff 100%);
             background-size: 300% 300%;
             animation: deepGradient 10s ease infinite;
             color: white;
-            overflow-x: hidden;
+            overflow: hidden;
             user-select: none;
-            transition: background 1s ease;
         }
 
         @keyframes deepGradient {
@@ -32,155 +30,125 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* === ФОН ДЛЯ 10 УРОВНЯ (Luxury Gold) === */
-        body.gold-mode {
-            /* Радиальный градиент: Свет идет из центра */
-            background: radial-gradient(circle at center, #ffd700 0%, #d4af37 40%, #5e4b06 100%);
-            background-size: 200% 200%;
-            animation: goldPulse 5s ease infinite;
-        }
-        @keyframes goldPulse {
-            0% { background-size: 200% 200%; }
-            50% { background-size: 250% 250%; }
-            100% { background-size: 200% 200%; }
-        }
-
-        /* КАРТОЧКА */
+        /* === КАРТОЧКА === */
         .glass-card {
             position: relative;
-            background: rgba(18, 20, 30, 0.75); 
+            background: rgba(18, 20, 30, 0.85); 
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 40px;
+            padding: 50px 40px 40px 40px; /* Добавил отступ сверху для полоски */
             text-align: center;
             max-width: 350px;
             width: 90%;
             transform-style: preserve-3d;
             transform: perspective(1000px);
-            transition: border 0.5s ease, box-shadow 0.5s ease;
             margin: 20px 0;
+            z-index: 1; /* Базовый слой */
         }
 
-        .glass-card.gold-border {
-            border: 2px solid #ffd700;
-            background: rgba(40, 30, 10, 0.85); /* Чуть теплее фон карточки */
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
-        }
-
-        /* === 2. ЗАМЕТНАЯ КНОПКА МУЗЫКИ === */
-        .music-wrapper {
+        /* === ПОЛОСКА ЗДОРОВЬЯ (BOSS BAR) === */
+        .boss-bar-container {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(40px);
+            width: 80%;
+            height: 12px;
+            background: #1a1a1a;
+            border: 1px solid #555;
+            border-radius: 6px;
+            overflow: hidden;
+            opacity: 0; /* Скрыта по умолчанию */
+            transition: opacity 0.5s ease;
+            z-index: 100; /* ВАЖНО: Выше аватарки */
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .boss-hp {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff3333, #990000);
+            transition: width 0.1s linear; /* Плавное уменьшение */
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        /* === МУЗЫКА (ИСПРАВЛЕНО ПЕРЕКРЫТИЕ) === */
+        .music-wrapper {
+            position: absolute;
+            top: 15px;
+            right: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transform: translateZ(30px); /* Выпирает вперед */
-            z-index: 20;
+            gap: 8px;
+            transform: translateZ(50px); /* Сильно выдвигаем вперед */
+            z-index: 101; /* Самый высокий слой */
         }
 
         .music-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            font-size: 1.4em;
+            font-size: 1.2em;
             cursor: pointer;
-            width: 45px; /* Увеличили размер */
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Пульсация, чтобы привлечь внимание */
             animation: pulseBtn 2s infinite; 
-            box-shadow: 0 0 10px rgba(255,255,255,0.1);
         }
 
-        @keyframes pulseBtn {
-            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-        }
-
-        .music-btn:hover { background: rgba(102, 192, 244, 0.6); transform: scale(1.1); }
-        
         .music-active { 
             background: #5865F2; 
-            box-shadow: 0 0 20px #5865F2;
             border-color: #5865F2;
-            animation: none; /* Перестает пульсировать при включении */
+            animation: none;
         }
 
-        /* === 3. МИНИ-ПЛЕЕР (ЭКВАЛАЙЗЕР) === */
+        /* Мини-плеер (эквалайзер) */
         .mini-player {
             display: flex;
             gap: 3px;
-            height: 20px;
+            height: 15px;
             align-items: flex-end;
-            opacity: 0; /* Скрыт по умолчанию */
+            opacity: 0;
             transition: opacity 0.3s;
         }
         .bar {
-            width: 4px;
+            width: 3px;
             background: #66c0f4;
             border-radius: 2px;
             animation: equalizer 0.5s infinite alternate;
         }
-        /* Разная задержка для столбиков */
-        .bar:nth-child(1) { height: 10px; animation-delay: 0.1s; }
-        .bar:nth-child(2) { height: 18px; animation-delay: 0.3s; }
-        .bar:nth-child(3) { height: 14px; animation-delay: 0.0s; }
-        .bar:nth-child(4) { height: 8px; animation-delay: 0.4s; }
+        .bar:nth-child(1) { height: 8px; animation-delay: 0.1s; }
+        .bar:nth-child(2) { height: 14px; animation-delay: 0.3s; }
+        .bar:nth-child(3) { height: 10px; animation-delay: 0.0s; }
+        @keyframes equalizer { 0% { height: 3px; } 100% { height: 15px; } }
 
-        @keyframes equalizer {
-            0% { height: 5px; }
-            100% { height: 20px; }
-        }
-
-        /* УРОВЕНЬ */
-        .level-badge {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            color: #66c0f4;
-            border: 1px solid rgba(102, 192, 244, 0.3);
-            font-weight: bold;
-            transform: translateZ(25px);
-        }
-        .level-badge.gold-text { color: #ffd700; border-color: #ffd700; background: rgba(0,0,0,0.8); }
-
-        /* АВАТАРКА */
+        /* === АВАТАРКА === */
         .avatar {
+            position: relative;
+            z-index: 10; /* Ниже чем интерфейс */
             width: auto; 
             max-width: 100%;      
             max-height: 250px;
             height: auto;         
             display: block;       
             margin: 0 auto 15px auto; 
-            
             border-radius: 8px;
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
-            transition: transform 0.1s;
+            transition: transform 0.05s;
             cursor: pointer;
             transform: translateZ(20px);
         }
-        .avatar:active { transform: scale(0.95) translateZ(20px); }
+        .avatar:active { transform: scale(0.97) translateZ(20px); filter: brightness(1.2) sepia(1) hue-rotate(-50deg) saturate(2); /* Эффект получения урона (красный) */ }
 
         h1 { margin: 0; font-size: 2em; letter-spacing: 1px; transform: translateZ(15px); word-wrap: break-word;}
         
-        .pro-title {
-            color: #ffd700;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-        }
-
         .typewriter {
             font-size: 1.1em;
             color: #c7d5e0;
@@ -205,10 +173,8 @@
             gap: 10px;
             position: relative;
             overflow: hidden;
-            font-size: 1.05em;
         }
 
-        /* Кнопки */
         .tg-btn { background: rgba(42, 171, 238, 0.15); border: 1px solid rgba(42, 171, 238, 0.3); }
         .tg-btn:hover { background: rgba(42, 171, 238, 0.4); box-shadow: 0 0 20px rgba(42, 171, 238, 0.3); }
 
@@ -218,49 +184,89 @@
         .ds-btn { background: rgba(88, 101, 242, 0.15); border: 1px solid rgba(88, 101, 242, 0.3); }
         .ds-btn:hover { background: rgba(88, 101, 242, 0.4); box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
 
-        /* СУНДУЧОК */
-        .chest-btn {
-            display: none;
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            border: 2px solid #fff;
-            color: #333;
-            text-shadow: none;
-            animation: bounce 2s infinite;
-        }
-        .chest-btn:hover { box-shadow: 0 0 30px #ffd700; transform: scale(1.05); }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-10px);}
-            60% {transform: translateY(-5px);}
+        /* === ЭКРАН ПОБЕДЫ (СУНДУК) === */
+        #reward-overlay {
+            display: none; /* Скрыт */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 1s forwards;
         }
 
-        /* Вылетающий XP */
-        .float-xp {
+        .reward-title {
+            font-size: 3em;
+            color: #fff;
+            text-transform: uppercase;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-bottom: 50px;
+            font-weight: 900;
+            letter-spacing: 5px;
+        }
+
+        .giant-chest-btn {
+            font-size: 2em;
+            padding: 20px 40px;
+            background: white;
+            color: #d35400;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-decoration: none;
+            transition: transform 0.2s;
+            animation: chestBounce 1s infinite alternate;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .giant-chest-btn:hover { transform: scale(1.1); }
+
+        @keyframes chestBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Вылетающий урон */
+        .float-dmg {
             position: absolute;
-            color: #66c0f4;
+            color: #ff3333;
             font-weight: bold;
             pointer-events: none;
-            animation: floatUp 0.6s ease-out forwards;
+            animation: floatUp 0.5s ease-out forwards;
             font-size: 1.5em;
-            z-index: 100;
+            z-index: 200;
             text-shadow: 0 0 5px black;
         }
         @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
+            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1.5) rotate(10deg); }
         }
     </style>
 </head>
 <body>
 
+    <div id="reward-overlay">
+        <div class="reward-title">ТВОЯ НАГРАДА</div>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="giant-chest-btn">
+            🎁 ОТКРЫТЬ
+        </a>
+    </div>
+
     <div class="glass-card" id="main-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
         
-        <div class="level-badge" id="lvl-badge">Lvl <span id="level-display">1</span></div>
+        <div class="boss-bar-container" id="boss-container">
+            <div class="boss-hp" id="hp-bar"></div>
+        </div>
 
         <div class="music-wrapper">
             <div class="mini-player" id="equalizer">
-                <div class="bar"></div>
                 <div class="bar"></div>
                 <div class="bar"></div>
                 <div class="bar"></div>
@@ -269,7 +275,7 @@
         </div>
         <audio id="bg-music" loop src="song.mp3"></audio>
 
-        <img src="avatar.gif" alt="Avatar" class="avatar" onclick="clickXP(event)" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
+        <img src="avatar.gif" alt="Avatar" class="avatar" onclick="hitBoss(event)" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
         
         <h1 id="nickname">KillBracker</h1>
         
@@ -279,10 +285,6 @@
             <a href="https://t.me/KillBracker" target="_blank" class="btn tg-btn">✈️ Telegram</a>
             <a href="https://steamcommunity.com/id/lonelyobserver/" target="_blank" class="btn steam-btn">🎮 Steam Profile</a>
             <a href="https://discord.com/users/296367874933784579" target="_blank" class="btn ds-btn">👾 Discord: killbracker</a>
-            
-            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="btn chest-btn" id="secret-chest">
-                🎁 Секретная Награда
-            </a>
         </div>
     </div>
 
@@ -290,7 +292,7 @@
 
     <script>
         /* 1. ПЕЧАТНАЯ МАШИНКА */
-        const words = ["Leveling Up...", "Lonely Observer", "Steam User", "Discord: killbracker"];
+        const words = ["Lonely Observer", "Steam User", "Discord: killbracker"];
         let i = 0;
         let timer;
         function typingEffect() {
@@ -323,7 +325,7 @@
         }
         typingEffect();
 
-        /* 2. МУЗЫКА И МИНИ-ПЛЕЕР */
+        /* 2. МУЗЫКА */
         const music = document.getElementById("bg-music");
         const musicBtn = document.querySelector(".music-btn");
         const equalizer = document.getElementById("equalizer");
@@ -334,65 +336,71 @@
                 music.pause();
                 musicBtn.classList.remove("music-active");
                 musicBtn.innerHTML = "🎵";
-                equalizer.style.opacity = "0"; // Прячем эквалайзер
+                equalizer.style.opacity = "0"; 
             } else {
                 music.volume = 0.3;
                 music.play().catch(e => console.log("Audio need interaction"));
                 musicBtn.classList.add("music-active");
                 musicBtn.innerHTML = "⏸️";
-                equalizer.style.opacity = "1"; // Показываем эквалайзер
+                equalizer.style.opacity = "1";
             }
             isPlaying = !isPlaying;
         }
 
-        /* 3. XP СИСТЕМА (БЕЗ СОХРАНЕНИЯ) */
-        let xp = 0; // Начинаем с 0 при каждой загрузке
-        let hasCelebrated = false;
-        
-        // Обновляем дисплей сразу
-        document.getElementById("level-display").innerText = "1";
+        /* 3. БИТВА С БОССОМ (HP LOGIC) */
+        const maxHP = 100; // Количество кликов до победы
+        let currentHP = maxHP;
+        let gameStarted = false;
 
-        function clickXP(event) {
-            xp++;
-            
-            const floatText = document.createElement("div");
-            floatText.classList.add("float-xp");
-            floatText.innerText = "+1 XP";
-            floatText.style.left = event.clientX + "px";
-            floatText.style.top = event.clientY + "px";
-            document.body.appendChild(floatText);
-            setTimeout(() => { floatText.remove(); }, 600);
+        function hitBoss(event) {
+            // Если кликнули первый раз - показываем полоску
+            if (!gameStarted) {
+                gameStarted = true;
+                document.getElementById("boss-container").style.opacity = "1";
+            }
 
-            checkLevelEffects();
-        }
+            // Наносим урон, если ХП еще есть
+            if (currentHP > 0) {
+                currentHP--;
+                updateHealthBar();
+                showDamage(event);
+            }
 
-        function checkLevelEffects() {
-            let level = Math.floor(xp / 10) + 1;
-            document.getElementById("level-display").innerText = level;
-
-            if (level >= 10) {
-                activateGoldMode();
-                if (!hasCelebrated && level === 10) {
-                    launchConfetti();
-                    hasCelebrated = true;
-                }
+            // Если убили
+            if (currentHP <= 0) {
+                winGame();
             }
         }
 
-        function activateGoldMode() {
-            document.body.classList.add("gold-mode");
-            const nickElement = document.getElementById("nickname");
-            nickElement.innerHTML = "👑 PRO KillBracker";
-            nickElement.classList.add("pro-title");
-            document.getElementById("main-card").classList.add("gold-border");
-            document.getElementById("lvl-badge").classList.add("gold-text");
-            document.getElementById("secret-chest").style.display = "flex";
+        function updateHealthBar() {
+            const percentage = (currentHP / maxHP) * 100;
+            document.getElementById("hp-bar").style.width = percentage + "%";
+        }
+
+        function showDamage(event) {
+            const floatText = document.createElement("div");
+            floatText.classList.add("float-dmg");
+            floatText.innerText = "-1"; // Урон
+            floatText.style.left = event.clientX + "px";
+            floatText.style.top = event.clientY + "px";
+            document.body.appendChild(floatText);
+            setTimeout(() => { floatText.remove(); }, 500);
+        }
+
+        function winGame() {
+            // Запускаем конфетти
+            launchConfetti();
+            
+            // Скрываем карточку и показываем награду
+            setTimeout(() => {
+                document.getElementById("reward-overlay").style.display = "flex";
+            }, 500); // Небольшая задержка перед победным экраном
         }
 
         function launchConfetti() {
             var duration = 3 * 1000;
             var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 99999 };
             function randomInRange(min, max) { return Math.random() * (max - min) + min; }
             var interval = setInterval(function() {
                 var timeLeft = animationEnd - Date.now();

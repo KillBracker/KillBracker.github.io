@@ -2,65 +2,198 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KillBracker | Profile</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* СТИЛИ ОСТАЮТСЯ ТЕМИ ЖЕ, ЧТОБЫ НЕ ЗАГРОМОЖДАТЬ */
+        /* === 0. ПЕРЕМЕННЫЕ ТЕМ === */
         :root {
+            /* DARK THEME (DEFAULT) */
             --bg-gradient: linear-gradient(125deg, #0b0f19 0%, #180c2e 30%, #2a1b5c 60%, #00d4ff 100%);
-            --text-main: #ffffff; --text-sub: #8b9bb4; --card-bg: rgba(20, 23, 35, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08); --btn-bg: rgba(255, 255, 255, 0.05);
-            --btn-hover: rgba(255, 255, 255, 0.15); --particle-color: rgba(255, 255, 255, 0.5); --blob-opacity: 0.6;
+            --text-main: #ffffff;
+            --text-sub: #8b9bb4;
+            --card-bg: rgba(20, 23, 35, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --particle-color: rgba(255, 255, 255, 0.5);
+            --blob-opacity: 0.6;
         }
+
+        /* LIGHT THEME */
         body.light-theme {
             --bg-gradient: linear-gradient(125deg, #f5f7fa 0%, #c3cfe2 100%);
-            --text-main: #2c3e50; --text-sub: #546e7a; --card-bg: rgba(255, 255, 255, 0.7);
-            --card-border: rgba(0, 0, 0, 0.05); --btn-bg: rgba(0, 0, 0, 0.05);
-            --btn-hover: rgba(0, 0, 0, 0.1); --particle-color: rgba(0, 0, 0, 0.3); --blob-opacity: 0.3;
+            --text-main: #2c3e50;
+            --text-sub: #546e7a;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(0, 0, 0, 0.05);
+            --btn-bg: rgba(0, 0, 0, 0.05);
+            --btn-hover: rgba(0, 0, 0, 0.1);
+            --particle-color: rgba(0, 0, 0, 0.3);
+            --blob-opacity: 0.3;
         }
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gradient); background-size: 300% 300%; animation: deepGradient 15s ease infinite; color: var(--text-main); overflow: hidden; user-select: none; transition: background 0.5s ease, color 0.5s ease; }
-        @keyframes deepGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; transition: transform 0.2s ease-out, opacity 0.5s; opacity: var(--blob-opacity); }
+
+        /* === ГЛОБАЛЬНЫЕ НАСТРОЙКИ === */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            background-size: 300% 300%;
+            animation: deepGradient 15s ease infinite;
+            color: var(--text-main);
+            overflow: hidden; user-select: none;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        @keyframes deepGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* === CANVAS (ЧАСТИЦЫ) === */
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        /* === БЛОБЫ И ШУМ === */
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0;
+            transition: transform 0.2s ease-out, opacity 0.5s;
+            opacity: var(--blob-opacity);
+        }
         .blob-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: #2a1b5c; }
         .blob-2 { bottom: 10%; right: 10%; width: 350px; height: 350px; background: #00d4ff; opacity: 0.4; }
         .blob-3 { top: 40%; left: 40%; width: 300px; height: 300px; background: #ff0055; opacity: 0.2; }
-        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; opacity: 0.06; background-image: url("https://grainy-gradients.vercel.app/noise.svg"); }
-        .ui-controls { position: absolute; top: 20px; right: 20px; z-index: 101; }
-        .icon-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--text-main); font-size: 1.2em; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; cursor: pointer; }
+        
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 2; opacity: 0.06;
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+        }
+        
+        /* === UI КОНТРОЛЛЫ (ТЕМА) === */
+        .ui-controls {
+            position: absolute; top: 20px; right: 20px; z-index: 101;
+        }
+        .icon-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main); font-size: 1.2em;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s; cursor: pointer;
+        }
         .icon-btn:hover { transform: scale(1.1); background: var(--btn-hover); }
-        .glass-card { position: relative; background: var(--card-bg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid var(--card-border); padding: 50px 40px 30px 40px; text-align: center; max-width: 380px; width: 90%; transform-style: preserve-3d; transform: perspective(1000px); z-index: 10; animation: breath 6s ease-in-out infinite; transition: background 0.5s, border 0.5s; }
+
+        /* === КАРТОЧКА === */
+        .glass-card {
+            position: relative;
+            background: var(--card-bg);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; border: 1px solid var(--card-border);
+            padding: 50px 40px 30px 40px;
+            text-align: center; max-width: 380px; width: 90%;
+            transform-style: preserve-3d; transform: perspective(1000px);
+            z-index: 10;
+            animation: breath 6s ease-in-out infinite;
+            transition: background 0.5s, border 0.5s;
+        }
         @keyframes breath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.005); } }
-        .boss-bar-container { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 24px 24px 0 0; overflow: hidden; opacity: 0; transition: opacity 0.5s; z-index: 100; }
-        .boss-hp { width: 100%; height: 100%; background: linear-gradient(90deg, #ff3333, #ff0055); transition: width 0.1s linear; }
-        .music-wrapper { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 10px; transform: translateZ(50px); z-index: 101; }
-        .music-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.2em; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; transition: 0.3s; display: flex; align-items: center; justify-content: center; animation: pulseBtn 2s infinite; }
+
+        /* Boss Bar */
+        .boss-bar-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: rgba(0,0,0,0.1); border-radius: 24px 24px 0 0; overflow: hidden;
+            opacity: 0; transition: opacity 0.5s; z-index: 100;
+        }
+        .boss-hp {
+            width: 100%; height: 100%; background: linear-gradient(90deg, #ff3333, #ff0055);
+            transition: width 0.1s linear;
+        }
+
+        /* МУЗЫКАЛЬНЫЙ БЛОК */
+        .music-wrapper {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; align-items: center; gap: 10px;
+            transform: translateZ(50px); z-index: 101;
+        }
+        .music-btn {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 1.2em; cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center;
+            animation: pulseBtn 2s infinite; 
+        }
         .music-active { background: #5865F2; border-color: #5865F2; animation: none; box-shadow: 0 0 15px rgba(88, 101, 242, 0.6); }
         @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
-        .volume-slider { width: 0; opacity: 0; height: 10px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; -webkit-appearance: none; outline: none; transition: 0.4s ease; margin-right: 5px; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
-        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; cursor: pointer; border: 2px solid #5865F2; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+
+        /* Ползунок громкости */
+        .volume-slider {
+            width: 0; opacity: 0; height: 10px; background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px; -webkit-appearance: none; outline: none;
+            transition: 0.4s ease; margin-right: 5px; cursor: pointer;
+            border: 2px solid #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+            background: #fff; cursor: pointer; border: 2px solid #5865F2;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
         .music-wrapper.active .volume-slider { width: 80px; opacity: 1; }
-        .avatar { position: relative; z-index: 10; width: auto; max-width: 100%; max-height: 250px; height: auto; display: block; margin: 10px auto 10px auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); transition: transform 0.05s, filter 0.3s; transform: translateZ(20px); cursor: pointer; }
+
+        /* Аватарка */
+        .avatar {
+            position: relative; z-index: 10;
+            width: auto; max-width: 100%; max-height: 250px; height: auto;
+            display: block; margin: 10px auto 10px auto;
+            border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: transform 0.05s, filter 0.3s; transform: translateZ(20px);
+            cursor: pointer; -webkit-user-drag: none;
+        }
         .avatar:active { transform: scale(0.95) translateZ(20px); }
         .avatar.hit { filter: brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3); }
         .rage-mode { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; border: 2px solid red; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        /* Тексты */
         h1 { margin: 0; font-size: 2.2em; font-weight: 800; letter-spacing: -1px; transform: translateZ(15px); color: var(--text-main); }
         .subtitle { font-size: 1em; color: var(--text-sub); margin: 5px 0 10px 0; transform: translateZ(12px); }
         .typewriter { font-size: 1.1em; color: #66c0f4; margin: 0 0 25px 0; min-height: 1.5em; font-weight: 600; transform: translateZ(12px); }
-        .status-box { background: rgba(0,0,0,0.05); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 25px; font-size: 0.85em; color: var(--text-main); text-align: left; transform: translateZ(10px); display: flex; flex-direction: column; gap: 8px; }
+
+        /* Статус бокс */
+        .status-box {
+            background: rgba(0,0,0,0.05); border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 15px; margin-bottom: 25px;
+            font-size: 0.85em; color: var(--text-main); text-align: left;
+            transform: translateZ(10px); display: flex; flex-direction: column; gap: 8px;
+        }
         .song-name { color: #66c0f4; font-weight: 600; }
+
+        /* Ссылки */
         .links { display: flex; flex-direction: column; gap: 12px; transform: translateZ(30px); }
-        .btn { text-decoration: none; color: var(--text-main); padding: 16px; border-radius: 14px; transition: 0.3s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--btn-bg); border: 1px solid var(--card-border); backdrop-filter: blur(5px); cursor: pointer; }
+        .btn {
+            text-decoration: none; color: var(--text-main); padding: 16px;
+            border-radius: 14px; transition: 0.3s; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--btn-bg); border: 1px solid var(--card-border);
+            backdrop-filter: blur(5px); cursor: pointer;
+        }
         .btn:hover { background: var(--btn-hover); transform: translateY(-2px); }
+        
+        /* Стили брендов */
         .tg-btn:hover { border-color: #2AABEE; box-shadow: 0 0 20px rgba(42, 171, 238, 0.2); }
         .steam-btn:hover { border-color: #171a21; box-shadow: 0 0 20px rgba(102, 192, 244, 0.2); }
         .ds-btn:hover { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.2); }
+
+        /* Игровые элементы */
         #combo-counter { position: absolute; top: 60px; right: -20px; font-size: 1.5em; font-weight: 900; color: #ffd700; transform: rotate(15deg) translateZ(50px); opacity: 0; transition: opacity 0.2s; text-shadow: 0 0 10px rgba(0,0,0,0.5); pointer-events: none; z-index: 102; }
-        #finish-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(60px); font-size: 3em; font-weight: 900; color: #ff0000; text-transform: uppercase; text-shadow: 0 0 20px black; opacity: 0; pointer-events: none; z-index: 103; width: 100%; }
+        #finish-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(60px); font-size: 3em; font-weight: 900; color: #ff0000; text-transform: uppercase; text-shadow: 0 0 20px black; opacity: 0; pointer-events: none; z-index: 103; width: 100%; text-align: center; }
         .blink { animation: blinker 0.2s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
         .float-dmg { position: absolute; font-weight: bold; pointer-events: none; animation: floatUp 0.6s ease-out forwards; font-size: 1.5em; z-index: 200; text-shadow: 0 0 3px rgba(0,0,0,0.8); }
@@ -68,12 +201,44 @@
         .miss { color: #aaa; font-size: 1.2em; }
         .normal { color: #ffaa00; }
         @keyframes floatUp { 100% { opacity: 0; transform: translateY(-80px) scale(1.2); } }
-        #reward-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 1s forwards; }
-        .giant-chest-btn { font-size: 2em; padding: 20px 40px; background: white; color: #d35400; border: none; border-radius: 20px; text-decoration: none; animation: chestBounce 1s infinite alternate; cursor: pointer; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+        /* Экран победы */
+        #reward-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: radial-gradient(circle, #ffd700 0%, #ff8c00 100%); flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 1s forwards; padding: 20px; text-align: center; }
+        .giant-chest-btn { font-size: 2em; padding: 20px 40px; background: white; color: #d35400; border: none; border-radius: 20px; text-decoration: none; animation: chestBounce 1s infinite alternate; cursor: pointer; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: inline-block; }
         .back-btn { font-size: 1.2em; padding: 10px 30px; background: rgba(0,0,0,0.2); color: white; border: 2px solid white; border-radius: 15px; cursor: pointer; transition: 0.3s; }
         .back-btn:hover { background: white; color: #d35400; }
         @keyframes chestBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* === 📱 АДАПТАЦИЯ ПОД ТЕЛЕФОНЫ === */
+        @media (max-width: 600px) {
+            .glass-card {
+                padding: 40px 20px 25px 20px; /* Меньше отступов */
+                width: 95%; /* Шире карточка */
+            }
+            h1 { font-size: 1.8em; } /* Имя чуть меньше */
+            .subtitle { font-size: 0.9em; }
+            .typewriter { font-size: 1em; margin-bottom: 15px; }
+            
+            /* Кнопки музыки и темы компактнее */
+            .music-wrapper { top: 15px; right: 15px; }
+            .ui-controls { top: 15px; right: 15px; }
+            
+            /* Аватарка чуть меньше */
+            .avatar { max-height: 200px; }
+            
+            /* Ссылки компактнее */
+            .btn { padding: 14px; font-size: 0.95em; }
+            
+            /* Скрыть слишком яркие блобы, чтобы читалось */
+            .blob { opacity: 0.4; }
+            
+            /* Ползунок громкости чуть короче */
+            .music-wrapper.active .volume-slider { width: 60px; }
+            
+            /* Кнопка сундука меньше */
+            .giant-chest-btn { font-size: 1.5em; padding: 15px 30px; }
+        }
     </style>
 </head>
 <body class="dark-theme">
@@ -91,8 +256,9 @@
     <audio id="bg-music" loop src="song.mp3"></audio>
 
     <div id="reward-overlay">
-        <h1 style="font-size: 3em; color: white; margin-bottom: 50px;">ТВОЯ НАГРАДА</h1>
+        <h1 style="font-size: 2.5em; color: white; margin-bottom: 30px; text-shadow: 0 5px 10px rgba(0,0,0,0.2);">ТВОЯ НАГРАДА</h1>
         <a href="#" target="_blank" class="giant-chest-btn" id="reward-link-el">🎁 ОТКРЫТЬ</a>
+        <br>
         <button class="back-btn" onclick="closeReward()">Вернуться на сайт</button>
     </div>
 
@@ -140,18 +306,17 @@
         // =================================================================
         const CONFIG = {
             // Имя и подпись
-            name: "killbracker",
-            subtitle: "Люблю музыку, пиццу и экспериментирую",
+            name: "KillBracker",
+            subtitle: "Люблю музыку и экспериментирую",
 
-            // Фразы, которые печатаются (можно добавить сколько угодно)
+            // Фразы, которые печатаются (НЕ ЗАБУДЬ ЗАПЯТЫЕ В КОНЦЕ СТРОК!)
             typingWords: [
                 "Lonely Observer 👀", 
-                "Stand User", 
-                "Интеллектуалыч 🧠",
-                "🐝🍯🧠 я – колективний вулик-розум"
+                "Stand User ", 
+                "Интеллектуалыч 🧠" 
             ],
 
-            // Список песен (меняются раз в 2 минуты)
+            // Список песен
             songs: [
                 "Die With A Smile — Lady Gaga & Bruno Mars", 
                 "Running Up That Hill — Kate Bush", 
@@ -169,26 +334,26 @@
                 "怪獣 — sakanaction"
             ],
 
-            // Ссылки на соцсети (можешь менять названия, цвета и ссылки)
+            // Ссылки на соцсети
             links: [
                 { 
                     text: "✈️ Telegram", 
                     url: "https://t.me/KillBracker", 
-                    class: "tg-btn" // Стиль (синий)
+                    class: "tg-btn" 
                 },
                 { 
                     text: "🎮 Steam Profile", 
                     url: "https://steamcommunity.com/id/lonelyobserver/", 
-                    class: "steam-btn" // Стиль (черный)
+                    class: "steam-btn" 
                 },
                 { 
                     text: "👾 Discord: killbracker", 
                     url: "https://discord.com/users/296367874933784579", 
-                    class: "ds-btn" // Стиль (фиолетовый)
+                    class: "ds-btn" 
                 }
             ],
 
-            // Ссылка на награду из сундука (Рикролл)
+            // Ссылка на награду из сундука
             rewardLink: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         };
         // =================================================================
@@ -196,12 +361,11 @@
         // =================================================================
 
 
-        // --- ИНИЦИАЛИЗАЦИЯ ТЕКСТА ИЗ CONFIG ---
+        // --- ИНИЦИАЛИЗАЦИЯ ---
         document.getElementById('name-el').innerText = CONFIG.name;
         document.getElementById('subtitle-el').innerText = CONFIG.subtitle;
         document.getElementById('reward-link-el').href = CONFIG.rewardLink;
 
-        // Генерация кнопок ссылок
         const linksContainer = document.getElementById('links-container');
         CONFIG.links.forEach(link => {
             const a = document.createElement('a');
@@ -209,15 +373,11 @@
             a.target = "_blank";
             a.className = `btn ${link.class}`;
             a.innerText = link.text;
-            
-            // Добавляем эффект звука при наведении
             a.addEventListener('mouseenter', sfxHover);
-            
             linksContainer.appendChild(a);
         });
 
-
-        // --- АУДИО СИСТЕМА ---
+        // --- АУДИО ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(freq, type, duration) {
             const osc = audioCtx.createOscillator();
@@ -242,7 +402,6 @@
         const slider = document.getElementById('vol-slider');
         const musicWrapper = document.getElementById('music-wrapper');
         let isPlaying = false;
-        
         bgMusic.volume = 0.5;
 
         function toggleMusic() {
@@ -261,19 +420,14 @@
         }
         slider.addEventListener('input', (e) => bgMusic.volume = e.target.value);
 
-        // --- ПЕЧАТНАЯ МАШИНКА ---
-        const words = CONFIG.typingWords; // Берем из конфига
-        let i = 0;
-        let timer;
+        // --- ТЕКСТ ---
+        const words = CONFIG.typingWords;
+        let i = 0; let timer;
         function typingEffect() {
             let word = words[i].split("");
             var loopTyping = function() {
-                if (word.length > 0) {
-                    document.getElementById('typing-text').innerHTML += word.shift();
-                } else {
-                    setTimeout(deletingEffect, 2000); 
-                    return false;
-                };
+                if (word.length > 0) { document.getElementById('typing-text').innerHTML += word.shift(); } 
+                else { setTimeout(deletingEffect, 2000); return false; };
                 timer = setTimeout(loopTyping, 100); 
             };
             loopTyping();
@@ -281,14 +435,8 @@
         function deletingEffect() {
             let word = words[i].split("");
             var loopDeleting = function() {
-                if (word.length > 0) {
-                    word.pop();
-                    document.getElementById('typing-text').innerHTML = word.join("");
-                } else {
-                    if (words.length > (i + 1)) { i++; } else { i = 0; }
-                    typingEffect();
-                    return false;
-                };
+                if (word.length > 0) { word.pop(); document.getElementById('typing-text').innerHTML = word.join(""); } 
+                else { if (words.length > (i + 1)) { i++; } else { i = 0; } typingEffect(); return false; };
                 timer = setTimeout(loopDeleting, 50); 
             };
             loopDeleting();
@@ -327,9 +475,12 @@
             }
             update(mouseX, mouseY) {
                 this.x += this.speedX; this.y += this.speedY;
-                const dx = mouseX - this.x; const dy = mouseY - this.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 100) { this.x -= dx * 0.05; this.y -= dy * 0.05; }
+                // На мобильных отключаем реакцию на мышь для экономии ресурсов
+                if (window.innerWidth > 600) {
+                     const dx = mouseX - this.x; const dy = mouseY - this.y;
+                     const dist = Math.sqrt(dx*dx + dy*dy);
+                     if (dist < 100) { this.x -= dx * 0.05; this.y -= dy * 0.05; }
+                }
                 if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0;
                 if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
             }
@@ -338,7 +489,7 @@
                 ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
-        for (let i = 0; i < 50; i++) particles.push(new Particle());
+        for (let i = 0; i < 40; i++) particles.push(new Particle());
         let mouseX = 0, mouseY = 0;
         window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
         function animateParticles() {
@@ -373,7 +524,7 @@
             if (hp < 40) avatar.classList.add('rage-mode');
             if (hp < 10 && hp > 0) { finishText.style.opacity = 1; finishText.classList.add('blink'); if (isPlaying) bgMusic.playbackRate = 0.8; } 
             else { finishText.style.opacity = 0; }
-            showFloatText(e.clientX, e.clientY, text, type);
+            showFloatText(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2, text, type);
             if (hp <= 0) winGame();
         }
         function updateComboUI() {
@@ -403,13 +554,16 @@
             started = false;
         }
 
-        // --- ХОВЕР ЭФФЕКТЫ ---
-        window.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth - e.clientX * 2) / 100;
-            const y = (window.innerHeight - e.clientY * 2) / 100;
-            document.querySelector('.blob-1').style.transform = `translate(${x}px, ${y}px)`;
-            document.querySelector('.blob-2').style.transform = `translate(${-x}px, ${-y}px)`;
-        });
+        // --- ПАРАЛЛАКС ФОНА (Только PC) ---
+        if (window.innerWidth > 600) {
+            window.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth - e.clientX * 2) / 100;
+                const y = (window.innerHeight - e.clientY * 2) / 100;
+                document.querySelector('.blob-1').style.transform = `translate(${x}px, ${y}px)`;
+                document.querySelector('.blob-2').style.transform = `translate(${-x}px, ${-y}px)`;
+            });
+        }
+
         function launchConfetti() {
             var end = Date.now() + (3 * 1000);
             (function frame() {
@@ -419,8 +573,8 @@
             }());
         }
 
-        // --- РОТАЦИЯ ПЕСЕН ---
-        const songsList = CONFIG.songs; // Берем из конфига
+        // --- ПЕСНИ ---
+        const songsList = CONFIG.songs;
         function changeSong() {
             const el = document.getElementById('current-song');
             el.style.opacity = 0;

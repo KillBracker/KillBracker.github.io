@@ -82,7 +82,7 @@
             right: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transform: translateZ(50px);
             z-index: 101;
         }
@@ -110,33 +110,41 @@
             animation: none;
         }
 
-        /* Ползунок громкости */
+        /* === ВЫРАЗИТЕЛЬНЫЙ ПОЛЗУНОК ГРОМКОСТИ === */
         .volume-slider {
             width: 0px; /* Скрыт (ширина 0) */
             opacity: 0;
-            height: 4px;
+            height: 8px; /* Сделали толще */
             -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.3); /* Более заметный фон */
+            border: 1px solid rgba(255, 255, 255, 0.5); /* Обводка */
+            border-radius: 4px;
             outline: none;
-            transition: 0.4s ease; /* Плавное появление */
+            transition: 0.4s ease; 
             cursor: pointer;
         }
 
-        /* Стиль бегунка */
+        /* Стиль бегунка (кружочка) */
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 18px; /* Большой удобный кружок */
+            height: 18px;
             border-radius: 50%;
-            background: #66c0f4;
+            background: #fff; /* Ярко-белый */
+            border: 2px solid #5865F2; /* Синяя окантовка */
             cursor: pointer;
-            box-shadow: 0 0 5px rgba(102, 192, 244, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* Свечение */
+            margin-top: -1px; /* Выравнивание */
+        }
+        
+        /* При наведении на бегунок он увеличивается */
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
         }
 
         /* Когда музыка играет, ползунок виден */
         .music-wrapper.active .volume-slider {
-            width: 70px;
+            width: 80px; /* Чуть шире */
             opacity: 1;
             margin-right: 5px;
         }
@@ -326,8 +334,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
 
     <script>
-        /* 1. ПЕЧАТНАЯ МАШИНКА */
-        const words = ["Lonely Observer 👀", "Stand User ", "Интеллектуалыч 🧠"];        
+        /* 1. ПЕЧАТНАЯ МАШИНКА (ОБНОВЛЕННЫЙ ТЕКСТ) */
+        const words = ["Lonely Observer 👀", "Stand User ", "Интеллектуалыч 🧠"];
         let i = 0;
         let timer;
         function typingEffect() {
@@ -368,10 +376,8 @@
         const volSlider = document.getElementById("vol-slider");
         let isPlaying = false;
 
-        // Устанавливаем громкость по умолчанию 50%
         music.volume = 0.5;
 
-        // Логика изменения громкости
         volSlider.addEventListener('input', function() {
             music.volume = this.value;
         });
@@ -382,21 +388,19 @@
                 musicBtn.classList.remove("music-active");
                 musicBtn.innerHTML = "🎵";
                 equalizer.style.opacity = "0";
-                // Скрываем слайдер (удаляем класс active)
                 musicWrapper.classList.remove("active");
             } else {
                 music.play().catch(e => console.log("Interaction needed"));
                 musicBtn.classList.add("music-active");
                 musicBtn.innerHTML = "⏸️";
                 equalizer.style.opacity = "1";
-                // Показываем слайдер (добавляем класс active)
                 musicWrapper.classList.add("active");
             }
             isPlaying = !isPlaying;
         }
 
         /* 3. БИТВА С БОССОМ (HP LOGIC) */
-        const maxHP = 100; // Количество кликов до победы
+        const maxHP = 100; // HP Босса
         let currentHP = maxHP;
         let gameStarted = false;
 

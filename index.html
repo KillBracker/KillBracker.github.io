@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* === ОСНОВНОЙ ФОН === */
+        /* === 1. НОВЫЙ ИНТЕРЕСНЫЙ ФОН (Deep Cyberpunk) === */
         body {
             margin: 0;
             padding: 0;
@@ -16,97 +16,157 @@
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(-45deg, #0f111a, #1b2838, #2a475e, #5865F2);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+            /* Глубокий сложный градиент */
+            background: linear-gradient(125deg, #0b0f19 0%, #180c2e 30%, #2a1b5c 60%, #00d4ff 100%);
+            background-size: 300% 300%;
+            animation: deepGradient 10s ease infinite;
             color: white;
-            overflow-x: hidden; /* Скрываем горизонтальную прокрутку */
+            overflow-x: hidden;
             user-select: none;
             transition: background 1s ease;
         }
 
-        /* ЗОЛОТОЙ РЕЖИМ (LVL 10) */
-        body.gold-mode {
-            background: linear-gradient(-45deg, #b8860b, #daa520, #ffd700, #2a475e);
-            background-size: 400% 400%;
-        }
-
-        @keyframes gradient {
+        @keyframes deepGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
+        /* === ФОН ДЛЯ 10 УРОВНЯ (Luxury Gold) === */
+        body.gold-mode {
+            /* Радиальный градиент: Свет идет из центра */
+            background: radial-gradient(circle at center, #ffd700 0%, #d4af37 40%, #5e4b06 100%);
+            background-size: 200% 200%;
+            animation: goldPulse 5s ease infinite;
+        }
+        @keyframes goldPulse {
+            0% { background-size: 200% 200%; }
+            50% { background-size: 250% 250%; }
+            100% { background-size: 200% 200%; }
+        }
+
         /* КАРТОЧКА */
         .glass-card {
             position: relative;
-            background: rgba(23, 26, 33, 0.85); 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(18, 20, 30, 0.75); 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 40px;
             text-align: center;
             max-width: 350px;
             width: 90%;
             transform-style: preserve-3d;
             transform: perspective(1000px);
-            transition: border 0.5s ease;
-            margin: 20px 0; /* Отступы сверху/снизу для мобильных */
+            transition: border 0.5s ease, box-shadow 0.5s ease;
+            margin: 20px 0;
         }
 
         .glass-card.gold-border {
             border: 2px solid #ffd700;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+            background: rgba(40, 30, 10, 0.85); /* Чуть теплее фон карточки */
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
         }
 
-        /* Кнопка музыки */
-        .music-btn {
+        /* === 2. ЗАМЕТНАЯ КНОПКА МУЗЫКИ === */
+        .music-wrapper {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            font-size: 1.2em;
-            cursor: pointer;
-            width: 35px;
-            height: 35px;
-            border-radius: 5px;
-            transition: 0.3s;
-            z-index: 10;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateZ(30px); /* Выпирает вперед */
+            z-index: 20;
         }
-        .music-btn:hover { background: rgba(102, 192, 244, 0.5); }
-        .music-active { background: rgba(88, 101, 242, 0.8); color: #fff; }
 
-        /* Уровень (XP) */
+        .music-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-size: 1.4em;
+            cursor: pointer;
+            width: 45px; /* Увеличили размер */
+            height: 45px;
+            border-radius: 50%;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Пульсация, чтобы привлечь внимание */
+            animation: pulseBtn 2s infinite; 
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        @keyframes pulseBtn {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        .music-btn:hover { background: rgba(102, 192, 244, 0.6); transform: scale(1.1); }
+        
+        .music-active { 
+            background: #5865F2; 
+            box-shadow: 0 0 20px #5865F2;
+            border-color: #5865F2;
+            animation: none; /* Перестает пульсировать при включении */
+        }
+
+        /* === 3. МИНИ-ПЛЕЕР (ЭКВАЛАЙЗЕР) === */
+        .mini-player {
+            display: flex;
+            gap: 3px;
+            height: 20px;
+            align-items: flex-end;
+            opacity: 0; /* Скрыт по умолчанию */
+            transition: opacity 0.3s;
+        }
+        .bar {
+            width: 4px;
+            background: #66c0f4;
+            border-radius: 2px;
+            animation: equalizer 0.5s infinite alternate;
+        }
+        /* Разная задержка для столбиков */
+        .bar:nth-child(1) { height: 10px; animation-delay: 0.1s; }
+        .bar:nth-child(2) { height: 18px; animation-delay: 0.3s; }
+        .bar:nth-child(3) { height: 14px; animation-delay: 0.0s; }
+        .bar:nth-child(4) { height: 8px; animation-delay: 0.4s; }
+
+        @keyframes equalizer {
+            0% { height: 5px; }
+            100% { height: 20px; }
+        }
+
+        /* УРОВЕНЬ */
         .level-badge {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 25px;
+            left: 25px;
             background: rgba(0, 0, 0, 0.6);
-            padding: 5px 12px;
-            border-radius: 5px;
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 0.9em;
             color: #66c0f4;
             border: 1px solid rgba(102, 192, 244, 0.3);
             font-weight: bold;
-            transform: translateZ(20px);
+            transform: translateZ(25px);
         }
-        .level-badge.gold-text { color: #ffd700; border-color: #ffd700; }
+        .level-badge.gold-text { color: #ffd700; border-color: #ffd700; background: rgba(0,0,0,0.8); }
 
-        /* === АВАТАРКА (СВОБОДНАЯ ФОРМА) === */
+        /* АВАТАРКА */
         .avatar {
-            /* Убираем жесткие width/height */
             width: auto; 
-            max-width: 100%;      /* Не шире карточки */
-            max-height: 250px;    /* Ограничение по высоте, чтобы не была гигантской */
-            height: auto;         /* Высота подстроится под пропорции */
-            display: block;       /* Чтобы margin auto работал корректно */
-            margin: 0 auto 15px auto; /* Центрируем и добавляем отступ снизу */
+            max-width: 100%;      
+            max-height: 250px;
+            height: auto;         
+            display: block;       
+            margin: 0 auto 15px auto; 
             
-            border-radius: 8px;   /* Легкое скругление углов */
+            border-radius: 8px;
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
             transition: transform 0.1s;
             cursor: pointer;
@@ -118,7 +178,7 @@
         
         .pro-title {
             color: #ffd700;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
         }
 
         .typewriter {
@@ -136,7 +196,7 @@
             text-decoration: none;
             color: white;
             padding: 14px;
-            border-radius: 8px;
+            border-radius: 12px;
             transition: 0.3s;
             font-weight: bold;
             display: flex;
@@ -145,8 +205,10 @@
             gap: 10px;
             position: relative;
             overflow: hidden;
+            font-size: 1.05em;
         }
 
+        /* Кнопки */
         .tg-btn { background: rgba(42, 171, 238, 0.15); border: 1px solid rgba(42, 171, 238, 0.3); }
         .tg-btn:hover { background: rgba(42, 171, 238, 0.4); box-shadow: 0 0 20px rgba(42, 171, 238, 0.3); }
 
@@ -156,7 +218,7 @@
         .ds-btn { background: rgba(88, 101, 242, 0.15); border: 1px solid rgba(88, 101, 242, 0.3); }
         .ds-btn:hover { background: rgba(88, 101, 242, 0.4); box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
 
-        /* === СУНДУЧОК С НАГРАДОЙ === */
+        /* СУНДУЧОК */
         .chest-btn {
             display: none;
             background: linear-gradient(45deg, #ffd700, #ffa500);
@@ -165,10 +227,7 @@
             text-shadow: none;
             animation: bounce 2s infinite;
         }
-        .chest-btn:hover {
-            box-shadow: 0 0 30px #ffd700;
-            transform: scale(1.05);
-        }
+        .chest-btn:hover { box-shadow: 0 0 30px #ffd700; transform: scale(1.05); }
 
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
@@ -176,30 +235,39 @@
             60% {transform: translateY(-5px);}
         }
 
-        /* Анимация XP */
+        /* Вылетающий XP */
         .float-xp {
             position: absolute;
             color: #66c0f4;
             font-weight: bold;
             pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards;
+            animation: floatUp 0.6s ease-out forwards;
             font-size: 1.5em;
             z-index: 100;
-            text-shadow: 0 0 5px rgba(0,0,0,1);
+            text-shadow: 0 0 5px black;
         }
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-80px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
         }
     </style>
 </head>
 <body>
 
     <div class="glass-card" id="main-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
-        <button class="music-btn" onclick="toggleMusic()">🎵</button>
-        <audio id="bg-music" loop src="song.mp3"></audio>
-
+        
         <div class="level-badge" id="lvl-badge">Lvl <span id="level-display">1</span></div>
+
+        <div class="music-wrapper">
+            <div class="mini-player" id="equalizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <button class="music-btn" onclick="toggleMusic()">🎵</button>
+        </div>
+        <audio id="bg-music" loop src="song.mp3"></audio>
 
         <img src="avatar.gif" alt="Avatar" class="avatar" onclick="clickXP(event)" onerror="this.src='https://via.placeholder.com/150?text=No+Gif';">
         
@@ -255,33 +323,37 @@
         }
         typingEffect();
 
-        /* 2. МУЗЫКА */
+        /* 2. МУЗЫКА И МИНИ-ПЛЕЕР */
         const music = document.getElementById("bg-music");
         const musicBtn = document.querySelector(".music-btn");
+        const equalizer = document.getElementById("equalizer");
         let isPlaying = false;
+
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
                 musicBtn.classList.remove("music-active");
                 musicBtn.innerHTML = "🎵";
+                equalizer.style.opacity = "0"; // Прячем эквалайзер
             } else {
                 music.volume = 0.3;
-                music.play().catch(e => console.log("Audio not loaded"));
+                music.play().catch(e => console.log("Audio need interaction"));
                 musicBtn.classList.add("music-active");
                 musicBtn.innerHTML = "⏸️";
+                equalizer.style.opacity = "1"; // Показываем эквалайзер
             }
             isPlaying = !isPlaying;
         }
 
-        /* 3. XP СИСТЕМА + КОМБО */
-        let xp = localStorage.getItem('kb_xp') ? parseInt(localStorage.getItem('kb_xp')) : 0;
+        /* 3. XP СИСТЕМА (БЕЗ СОХРАНЕНИЯ) */
+        let xp = 0; // Начинаем с 0 при каждой загрузке
         let hasCelebrated = false;
         
-        checkLevelEffects(); 
+        // Обновляем дисплей сразу
+        document.getElementById("level-display").innerText = "1";
 
         function clickXP(event) {
             xp++;
-            localStorage.setItem('kb_xp', xp);
             
             const floatText = document.createElement("div");
             floatText.classList.add("float-xp");
@@ -289,7 +361,7 @@
             floatText.style.left = event.clientX + "px";
             floatText.style.top = event.clientY + "px";
             document.body.appendChild(floatText);
-            setTimeout(() => { floatText.remove(); }, 800);
+            setTimeout(() => { floatText.remove(); }, 600);
 
             checkLevelEffects();
         }

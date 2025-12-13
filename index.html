@@ -133,17 +133,34 @@
         .music-active { background: #5865F2; border-color: #5865F2; animation: none; box-shadow: 0 0 15px rgba(88, 101, 242, 0.6); }
         @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
 
-        /* Ползунок громкости */
+        /* === ПОЛЗУНОК ГРОМКОСТИ (ЯРКАЯ ОБВОДКА) === */
         .volume-slider {
-            width: 0; opacity: 0; height: 6px; background: rgba(255,255,255,0.3);
-            border-radius: 3px; -webkit-appearance: none; outline: none;
-            transition: 0.4s ease; margin-right: 5px; cursor: pointer;
+            width: 0; 
+            opacity: 0; 
+            height: 10px; /* Чуть толще */
+            background: rgba(0, 0, 0, 0.5); /* Темный фон для контраста */
+            border-radius: 6px; 
+            -webkit-appearance: none; 
+            outline: none;
+            transition: 0.4s ease; 
+            margin-right: 5px; 
+            cursor: pointer;
+            border: 2px solid #ffffff; /* ЯРКАЯ БЕЛАЯ ОБВОДКА */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Легкое свечение */
         }
+        
         .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
-            background: #fff; cursor: pointer; border: 2px solid #5865F2;
+            -webkit-appearance: none; 
+            width: 16px; 
+            height: 16px; 
+            border-radius: 50%;
+            background: #fff; 
+            cursor: pointer; 
+            border: 2px solid #5865F2; /* Синий центр */
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
-        .music-wrapper.active .volume-slider { width: 70px; opacity: 1; }
+
+        .music-wrapper.active .volume-slider { width: 80px; opacity: 1; }
 
 
         /* Аватарка */

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KillBracker | Profile</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     
     <style>
         /* === 0. ПЕРЕМЕННЫЕ ТЕМ === */
@@ -100,15 +101,12 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-radius: 24px; border: 1px solid var(--card-border);
-            padding: 50px 40px 30px 40px;
-            text-align: center; max-width: 380px; width: 90%;
-            transform-style: preserve-3d; transform: perspective(1000px);
+            padding: 40px 30px;
+            text-align: center; max-width: 600px; width: 90%;
+            transform-style: preserve-3d;
             z-index: 10;
-            animation: breath 6s ease-in-out infinite;
-            transition: background 0.5s, border 0.5s;
             margin: 20px 0; /* Отступ чтобы можно было скроллить */
         }
-        @keyframes breath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.005); } }
 
         /* Boss Bar */
         .boss-bar-container {
@@ -179,12 +177,12 @@
         }
         .song-name { color: #66c0f4; font-weight: 600; }
 
-        /* Ссылки */
-        .links { display: flex; flex-direction: column; gap: 12px; transform: translateZ(30px); }
+        /* Ссылки (в ряд) */
+        .links { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px; transform: translateZ(30px); margin-bottom: 25px; }
         .btn {
-            text-decoration: none; color: var(--text-main); padding: 16px;
+            text-decoration: none; color: var(--text-main); padding: 12px 16px;
             border-radius: 14px; transition: 0.3s; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
             background: var(--btn-bg); border: 1px solid var(--card-border);
             backdrop-filter: blur(5px); cursor: pointer;
         }
@@ -220,26 +218,47 @@
             width: 120px; height: auto; z-index: 20; 
             pointer-events: none; 
             transition: 0.3s;
-            /* УБРАЛ DROP-SHADOW */
         }
 
         .bottom-banner {
             display: block;
-            width: 100%; /* На всю ширину карточки */
+            width: 100%;
             aspect-ratio: 16 / 9;
             object-fit: cover;
             border-radius: 12px;
-            margin-top: 20px; /* Отступ от кнопок */
+            margin-top: auto; /* Прижимаем к низу */
             border: 1px solid var(--card-border);
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transform: translateZ(5px); /* Легкий 3D эффект */
+            transform: translateZ(5px); 
+            cursor: pointer; /* Курсор-рука */
+            transition: transform 0.2s;
         }
+        .bottom-banner:hover { transform: translateZ(5px) scale(1.02); }
+
+        /* === МОДАЛЬНОЕ ОКНО ДЛЯ БАННЕРА === */
+        #banner-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000;
+            background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center;
+            animation: fadeIn 0.3s forwards;
+        }
+        .banner-modal-content {
+            max-width: 90%; max-height: 80vh; width: auto; height: auto;
+            border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .banner-close-btn {
+            position: absolute; top: 20px; right: 30px;
+            font-size: 2.5em; color: white; cursor: pointer; transition: 0.3s;
+        }
+        .banner-close-btn:hover { color: #ff3333; }
 
         /* === 📱 АДАПТАЦИЯ === */
         @media (max-width: 600px) {
-            .glass-card { padding: 40px 20px 25px 20px; width: 95%; }
+            .glass-card { padding: 30px 20px; width: 95%; }
             h1 { font-size: 1.8em; } 
-            .corner-gif { width: 90px; bottom: 10px; right: 10px; } 
+            .corner-gif { width: 90px; bottom: 10px; right: 10px; }
+            /* Кнопки в столбик на мобильных для удобства */
+            .links { flex-direction: column; align-items: center; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
@@ -264,6 +283,11 @@
         <a href="#" target="_blank" class="giant-chest-btn" id="reward-link-el">🎁 ОТКРЫТЬ</a>
         <br>
         <button class="back-btn" onclick="closeReward()">Вернуться на сайт</button>
+    </div>
+
+    <div id="banner-modal">
+        <span class="banner-close-btn" onclick="closeBannerModal()">×</span>
+        <img class="banner-modal-content" id="banner-modal-img">
     </div>
 
     <div class="glass-card" id="main-card" data-tilt data-tilt-max="5" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.1">
@@ -301,11 +325,18 @@
         <div class="links" id="links-container">
             </div>
 
-        <img src="" class="bottom-banner" id="bottom-banner-el" alt="Banner">
+        <img src="" class="bottom-banner" id="bottom-banner-el" alt="Banner" onclick="openBannerModal()">
 
     </div>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script type="text/javascript">
+        VanillaTilt.init(document.querySelector("#main-card"), {
+            max: 5,
+            speed: 1000,
+            glare: true,
+            "max-glare": 0.1
+        });
+    </script>
 
     <script>
         // =================================================================
@@ -313,15 +344,16 @@
         // =================================================================
         const CONFIG = {
             name: "KillBracker",
-            subtitle: "Люблю музыку и экспериментирую",
+            subtitle: "Люблю музыку, пиццу и экспериментирую",
 
-            // ФАЙЛЫ ДЕКОРА (Убедись, что они загружены в репозиторий)
-            cornerGif: "sticker.gif",       // Гифка в углу
-            bottomImage: "banner.jpg",      // Картинка 16:9 внизу
+            // ФАЙЛЫ ДЕКОРА
+            cornerGif: "sticker.gif",       
+            bottomImage: "banner.jpg",      
 
             typingWords: [
                 "Lonely Observer 👀", 
-                "Stand User ", 
+                "Stand User", 
+                "🐝🍯🧠 я – колективний вулик-розум",
                 "Интеллектуалыч 🧠"
             ],
 
@@ -333,12 +365,12 @@
                 "16 Lines — Lil Peep", 
                 "Hope — XXXTENTACION", 
                 "カーストルーム — ZAQ", 
-                "Dance In The Game — ZAQ", 
                 "Atlantis — Seafret", 
                 "Moog City 2 — C418", 
                 "SAVIOR — Hollywood Undead", 
                 "Skyfall — Adele", 
                 "Daylight — David Kushner", 
+                "Dance In The Game — ZAQ", 
                 "怪獣 — sakanaction"
             ],
 
@@ -360,11 +392,25 @@
         // Load Decor Images
         const gifEl = document.getElementById('corner-gif-el');
         const banEl = document.getElementById('bottom-banner-el');
+        const modalImg = document.getElementById('banner-modal-img');
+
         gifEl.src = CONFIG.cornerGif;
         banEl.src = CONFIG.bottomImage;
         // Заглушки
         gifEl.onerror = () => gifEl.src = "https://media.tenor.com/On7kb94lM60AAAAj/pepe-dance.gif";
-        banEl.onerror = () => banEl.src = "https://via.placeholder.com/320x180?text=Banner+16:9";
+        banEl.onerror = () => {
+             banEl.src = "https://via.placeholder.com/600x338?text=Banner+16:9";
+             modalImg.src = banEl.src;
+        };
+
+        // Модальное окно
+        function openBannerModal() {
+            modalImg.src = banEl.src;
+            document.getElementById('banner-modal').style.display = 'flex';
+        }
+        function closeBannerModal() {
+            document.getElementById('banner-modal').style.display = 'none';
+        }
 
         const linksContainer = document.getElementById('links-container');
         CONFIG.links.forEach(link => {

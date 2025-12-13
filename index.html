@@ -39,14 +39,14 @@
             -webkit-backdrop-filter: blur(20px);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 50px 40px 40px 40px; /* Добавил отступ сверху для полоски */
+            padding: 50px 40px 40px 40px;
             text-align: center;
             max-width: 350px;
             width: 90%;
             transform-style: preserve-3d;
             transform: perspective(1000px);
             margin: 20px 0;
-            z-index: 1; /* Базовый слой */
+            z-index: 1;
         }
 
         /* === ПОЛОСКА ЗДОРОВЬЯ (BOSS BAR) === */
@@ -63,7 +63,7 @@
             overflow: hidden;
             opacity: 0; /* Скрыта по умолчанию */
             transition: opacity 0.5s ease;
-            z-index: 100; /* ВАЖНО: Выше аватарки */
+            z-index: 100;
             box-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
 
@@ -71,20 +71,20 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, #ff3333, #990000);
-            transition: width 0.1s linear; /* Плавное уменьшение */
+            transition: width 0.1s linear;
             box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
 
-        /* === МУЗЫКА (ИСПРАВЛЕНО ПЕРЕКРЫТИЕ) === */
+        /* === МУЗЫКАЛЬНАЯ ПАНЕЛЬ === */
         .music-wrapper {
             position: absolute;
             top: 15px;
             right: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transform: translateZ(50px); /* Сильно выдвигаем вперед */
-            z-index: 101; /* Самый высокий слой */
+            gap: 10px;
+            transform: translateZ(50px);
+            z-index: 101;
         }
 
         .music-btn {
@@ -101,12 +101,44 @@
             align-items: center;
             justify-content: center;
             animation: pulseBtn 2s infinite; 
+            flex-shrink: 0;
         }
 
         .music-active { 
             background: #5865F2; 
             border-color: #5865F2;
             animation: none;
+        }
+
+        /* Ползунок громкости */
+        .volume-slider {
+            width: 0px; /* Скрыт (ширина 0) */
+            opacity: 0;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            transition: 0.4s ease; /* Плавное появление */
+            cursor: pointer;
+        }
+
+        /* Стиль бегунка */
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #66c0f4;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(102, 192, 244, 0.5);
+        }
+
+        /* Когда музыка играет, ползунок виден */
+        .music-wrapper.active .volume-slider {
+            width: 70px;
+            opacity: 1;
+            margin-right: 5px;
         }
 
         /* Мини-плеер (эквалайзер) */
@@ -132,7 +164,7 @@
         /* === АВАТАРКА === */
         .avatar {
             position: relative;
-            z-index: 10; /* Ниже чем интерфейс */
+            z-index: 10;
             width: auto; 
             max-width: 100%;      
             max-height: 250px;
@@ -145,7 +177,7 @@
             cursor: pointer;
             transform: translateZ(20px);
         }
-        .avatar:active { transform: scale(0.97) translateZ(20px); filter: brightness(1.2) sepia(1) hue-rotate(-50deg) saturate(2); /* Эффект получения урона (красный) */ }
+        .avatar:active { transform: scale(0.97) translateZ(20px); filter: brightness(1.2) sepia(1) hue-rotate(-50deg) saturate(2); }
 
         h1 { margin: 0; font-size: 2em; letter-spacing: 1px; transform: translateZ(15px); word-wrap: break-word;}
         
@@ -185,9 +217,9 @@
         .ds-btn:hover { background: rgba(88, 101, 242, 0.4); box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
 
 
-        /* === ЭКРАН ПОБЕДЫ (СУНДУК) === */
+        /* === ЭКРАН ПОБЕДЫ === */
         #reward-overlay {
-            display: none; /* Скрыт */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -265,12 +297,15 @@
             <div class="boss-hp" id="hp-bar"></div>
         </div>
 
-        <div class="music-wrapper">
+        <div class="music-wrapper" id="music-wrapper">
             <div class="mini-player" id="equalizer">
                 <div class="bar"></div>
                 <div class="bar"></div>
                 <div class="bar"></div>
             </div>
+            
+            <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.5">
+            
             <button class="music-btn" onclick="toggleMusic()">🎵</button>
         </div>
         <audio id="bg-music" loop src="song.mp3"></audio>
@@ -292,7 +327,7 @@
 
     <script>
         /* 1. ПЕЧАТНАЯ МАШИНКА */
-        const words = ["Lonely Observer", "Steam User", "Discord: killbracker"];
+        const words = ["Lonely Observer 👀", "Stand User ", "Интеллектуалыч 🧠"];        
         let i = 0;
         let timer;
         function typingEffect() {
@@ -325,24 +360,37 @@
         }
         typingEffect();
 
-        /* 2. МУЗЫКА */
+        /* 2. МУЗЫКА И ГРОМКОСТЬ */
         const music = document.getElementById("bg-music");
         const musicBtn = document.querySelector(".music-btn");
         const equalizer = document.getElementById("equalizer");
+        const musicWrapper = document.getElementById("music-wrapper");
+        const volSlider = document.getElementById("vol-slider");
         let isPlaying = false;
+
+        // Устанавливаем громкость по умолчанию 50%
+        music.volume = 0.5;
+
+        // Логика изменения громкости
+        volSlider.addEventListener('input', function() {
+            music.volume = this.value;
+        });
 
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
                 musicBtn.classList.remove("music-active");
                 musicBtn.innerHTML = "🎵";
-                equalizer.style.opacity = "0"; 
+                equalizer.style.opacity = "0";
+                // Скрываем слайдер (удаляем класс active)
+                musicWrapper.classList.remove("active");
             } else {
-                music.volume = 0.3;
-                music.play().catch(e => console.log("Audio need interaction"));
+                music.play().catch(e => console.log("Interaction needed"));
                 musicBtn.classList.add("music-active");
                 musicBtn.innerHTML = "⏸️";
                 equalizer.style.opacity = "1";
+                // Показываем слайдер (добавляем класс active)
+                musicWrapper.classList.add("active");
             }
             isPlaying = !isPlaying;
         }
@@ -353,20 +401,17 @@
         let gameStarted = false;
 
         function hitBoss(event) {
-            // Если кликнули первый раз - показываем полоску
             if (!gameStarted) {
                 gameStarted = true;
                 document.getElementById("boss-container").style.opacity = "1";
             }
 
-            // Наносим урон, если ХП еще есть
             if (currentHP > 0) {
                 currentHP--;
                 updateHealthBar();
                 showDamage(event);
             }
 
-            // Если убили
             if (currentHP <= 0) {
                 winGame();
             }
@@ -380,7 +425,7 @@
         function showDamage(event) {
             const floatText = document.createElement("div");
             floatText.classList.add("float-dmg");
-            floatText.innerText = "-1"; // Урон
+            floatText.innerText = "-1";
             floatText.style.left = event.clientX + "px";
             floatText.style.top = event.clientY + "px";
             document.body.appendChild(floatText);
@@ -388,13 +433,10 @@
         }
 
         function winGame() {
-            // Запускаем конфетти
             launchConfetti();
-            
-            // Скрываем карточку и показываем награду
             setTimeout(() => {
                 document.getElementById("reward-overlay").style.display = "flex";
-            }, 500); // Небольшая задержка перед победным экраном
+            }, 500);
         }
 
         function launchConfetti() {

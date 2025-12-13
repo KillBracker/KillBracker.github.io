@@ -1,22 +1,163 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Мой мини-сайт</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KillBracker | Links</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; background-color: #f0f0f0; }
-        h1 { color: #333; }
-        .card { background: white; padding: 20px; max-width: 400px; margin: 0 auto; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        a { display: block; margin: 10px 0; color: #007bff; text-decoration: none; }
+        /* Живой фон */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Темная тема, более геймерская */
+            background: linear-gradient(-45deg, #1b2838, #2a475e, #171a21, #66c0f4);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Стеклянная карточка */
+        .glass-card {
+            background: rgba(23, 26, 33, 0.6); /* Темное стекло */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+        }
+
+        /* Аватарка */
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 3px solid #66c0f4; /* Цвет Steam */
+            margin-bottom: 15px;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(102, 192, 244, 0.5);
+        }
+
+        h1 { margin: 0; font-size: 2em; letter-spacing: 1px; }
+        
+        /* Стиль для печатающегося текста */
+        .typewriter {
+            font-size: 1.1em;
+            color: #c7d5e0;
+            margin: 10px 0 30px 0;
+            min-height: 1.5em;
+            font-weight: 300; 
+        }
+
+        /* Кнопки ссылок */
+        .links { display: flex; flex-direction: column; gap: 15px; }
+        
+        .btn {
+            text-decoration: none;
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Цвета кнопок под бренды */
+        .tg-btn {
+            background: rgba(42, 171, 238, 0.2);
+            border: 1px solid rgba(42, 171, 238, 0.4);
+        }
+        .tg-btn:hover {
+            background: rgba(42, 171, 238, 0.5);
+            box-shadow: 0 0 15px rgba(42, 171, 238, 0.4);
+        }
+
+        .steam-btn {
+            background: rgba(23, 26, 33, 0.5);
+            border: 1px solid rgba(102, 192, 244, 0.4);
+        }
+        .steam-btn:hover {
+            background: linear-gradient(45deg, #1b2838, #2a475e);
+            box-shadow: 0 0 15px rgba(102, 192, 244, 0.4);
+        }
+
+        .btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Привет! 👋</h1>
-        <p>Это мой первый сайт </p>
-        <hr>
-        <p>Мои контакты:</p>
-        <a href="#">Написать в Telegram</a>
-        <a href="#">Мой Instagram</a>
+
+    <div class="glass-card">
+        <img src="https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg" alt="Avatar" class="avatar">
+        
+        <h1>KillBracker</h1>
+        
+        <div class="typewriter" id="typing-text"></div>
+
+        <div class="links">
+            <a href="https://t.me/KillBracker" target="_blank" class="btn tg-btn">
+                ✈️ Telegram
+            </a>
+            
+            <a href="https://steamcommunity.com/id/lonelyobserver/" target="_blank" class="btn steam-btn">
+                🎮 Steam Profile
+            </a>
+        </div>
     </div>
+
+    <script>
+        // ТЕКСТЫ КОТОРЫЕ БУДУТ ПЕЧАТАТЬСЯ
+        const words = ["Lonely Observer", "Steam User", "KillBracker", "Welcome to my profile"];
+        let i = 0;
+        let timer;
+
+        function typingEffect() {
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (word.length > 0) {
+                    document.getElementById('typing-text').innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, 2000); 
+                    return false;
+                };
+                timer = setTimeout(loopTyping, 100); 
+            };
+            loopTyping();
+        }
+
+        function deletingEffect() {
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (word.length > 0) {
+                    word.pop();
+                    document.getElementById('typing-text').innerHTML = word.join("");
+                } else {
+                    if (words.length > (i + 1)) { i++; } else { i = 0; }
+                    typingEffect();
+                    return false;
+                };
+                timer = setTimeout(loopDeleting, 50); 
+            };
+            loopDeleting();
+        }
+
+        typingEffect();
+    </script>
 </body>
 </html>
